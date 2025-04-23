@@ -1,0 +1,51 @@
+.kotak{
+    margin-top: 30px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.kiri{
+    background: fixed;
+    border-radius: 5;
+}
+
+.kanan{
+    background: fixed;
+    padding-top: 20%;
+}
+
+.kanan p{
+    color: silver;
+}
+
+.back{
+    font-size: 20px;
+}
+
+form .input-field{
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+form .input-field input{
+    height: 50px;
+    width: 50px;
+    border-radius: 10px;
+    font-size: 1.125rem;
+    text-align: center;
+    border: 1px solid green;
+}
+
+form .input-field input::-webkit-inner-spin-button,
+form .input-field input::-webkit-outer-spin-button{
+    display: none;
+}
+
+form button{
+    transition: all 0.2s ease;
+}
+
+form button.active{
+    opacity: 1;
+    pointer-events: auto;
+}
