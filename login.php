@@ -17,7 +17,7 @@
             <div class="kanan col-5">
                 <img src="assets/logo.png" alt="logo">
                 <br><br>
-                <h3>Welcome 👋</h3>
+                <h3>Halo Oll 👋</h3>
                 <p>Please login here</p>
 
                 <form method="POST" action="index.php">
