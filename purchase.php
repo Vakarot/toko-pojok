@@ -8,7 +8,6 @@ if (!isset($_SESSION['id_pengguna'])) {
 }*/
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +21,7 @@ if (!isset($_SESSION['id_pengguna'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="inventoryStyle.css">
+    <link rel="stylesheet" href="purchaseStyle.css">
 </head>
 <body>
     <div class="container">
@@ -47,8 +46,8 @@ if (!isset($_SESSION['id_pengguna'])) {
         <main class="main-content">
             <div class="header">
                 <div>
-                    <h1>Inventory</h1>
-                    <p>Items detail informations</p>
+                    <h1>Purchase</h1>
+                    <p>List of Products to Buy</p>
                 </div>
                 <div class="search-bar">
                     <div class="search-input">
@@ -72,11 +71,7 @@ if (!isset($_SESSION['id_pengguna'])) {
             <?php
                 include 'koneksi.php';
 
-                function formatRupiah($angka) {
-                    return "Rp " . number_format($angka, 2, ',', '.');
-                }
-
-                $query = "SELECT kode_produk, kategori, nama_produk, satuan, harga, jumlah_stok FROM produk";
+                $query = "SELECT id_pemesanan, kode_produk, tanggal_pesan, tanggal_datang, vendor, jumlah_pesan, jumlah_diterima FROM pemesanan";
                 $result = mysqli_query($connect, $query);
                 ?>
 
@@ -84,23 +79,27 @@ if (!isset($_SESSION['id_pengguna'])) {
                     <table class="table table-striped table-bordered">
                         <thead class="table">
                             <tr>
-                                <th>Kode Produk</th>
-                                <th>Kategori</th>
-                                <th>Nama Produk</th>
-                                <th>Satuan</th>
-                                <th>Harga</th>
-                                <th>Jumlah Stok</th>
+                                <th>ID Order</th>
+                                <th>Kode</th>
+                                <th>Tanggal Pesan</th>
+                                <th>Tanggal Datang</th>
+                                <th>Vendor</th>
+                                <th>Pesan</th>
+                                <th>Diterima</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php while ($row = mysqli_fetch_assoc($result)): ?>
                             <tr>
+                                <td><?= htmlspecialchars($row['id_pemesanan']) ?></td>
                                 <td><?= htmlspecialchars($row['kode_produk']) ?></td>
-                                <td><?= htmlspecialchars($row['kategori']) ?></td>
-                                <td><?= htmlspecialchars($row['nama_produk']) ?></td>
-                                <td><?= htmlspecialchars($row['satuan']) ?></td>
-                                <td><?= formatRupiah($row['harga']) ?></td>
-                                <td><?= number_format($row['jumlah_stok']) ?></td>
+                                <td><?= htmlspecialchars($row['tanggal_pesan']) ?></td>
+                                <td><?= htmlspecialchars($row['tanggal_datang']) ?></td>
+                                <td><?= htmlspecialchars($row['vendor']) ?></td>
+                                <td><?= htmlspecialchars($row['jumlah_pesan']) ?></td>
+                                <td><?= htmlspecialchars($row['jumlah_diterima']) ?></td>
+                                <td>Kosong Dulu</td>
                             </tr>
                             <?php endwhile; ?>
                         </tbody>
