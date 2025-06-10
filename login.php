@@ -17,25 +17,27 @@
             <div class="kanan col-5">
                 <img src="assets/logo.png" alt="logo">
                 <br><br>
-                <h3>Halo Oll 👋</h3>
+                <h3>Selamat Datang 👋</h3>
                 <p>Please login here</p>
 
-                <form method="POST" action="index.php">
+            <form method="POST" action="prosesLogin.php">
                 <div class="mb-3">
-                    <input type="username" class="panjang form-control border border-success" id="username" aria-describedby="username" value="Username">
+                    <input type="text" name="nama" class="panjang form-control border border-success" placeholder="Username" required>
                 </div>
                 <div class="mb-3">
-                    <input type="password" class="panjang form-control border border-success" id="exampleInputPassword1" value="Password">
+                    <input type="password" name="password" class="panjang form-control border border-success" placeholder="Password" required>
                 </div>
+                <!-- bagian remember me tetap -->
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="rememberMe">
                     <label class="form-check-label" for="rememberMe">Remember Me</label>
                     <a class="forgotPassword" href="forgotPassword.php">Forgot password?</a>
                 </div>
                 <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-success">Login</button>
+                    <button type="submit" class="btn btn-success">Login</button>
                 </div>
-                </form>
+            </form>
+
             </div>
         </div>
     </div>
