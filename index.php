@@ -3,6 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="indexStyle.css">
 </head>
@@ -15,7 +16,7 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                     <li><a href="#"><i class="fas fa-boxes"></i> Inventory</a></li>
                     <li><a href="#"><i class="fas fa-shopping-cart"></i> Purchase</a></li>
                     <li><a href="#"><i class="fas fa-cash-register"></i> Chasier</a></li>
