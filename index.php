@@ -20,7 +20,7 @@
                     <li><a href="#"><i class="fas fa-shopping-cart"></i> Purchase</a></li>
                     <li><a href="#"><i class="fas fa-cash-register"></i> Chasier</a></li>
                     <li><a href="#"><i class="fas fa-history"></i> History</a></li>
-                    <li><a href="#"><i class="fas fa-bell"></i> Notification</a></li>
+                    <li><a href="#"><i class="fas fa-bell"></i> Notifikasi</a></li>
                 </ul>
             </nav>
         </div>
