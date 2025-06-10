@@ -71,15 +71,17 @@ if (!isset($_SESSION['id_pengguna'])) {
             <?php
                 include 'koneksi.php';
 
-                $query = "SELECT id_pemesanan, kode_produk, tanggal_pesan, tanggal_datang, vendor, jumlah_pesan, jumlah_diterima FROM pemesanan";
+                $query = "SELECT * FROM pemesanan";
                 $result = mysqli_query($connect, $query);
                 ?>
 
                 <div class="table-responsive mt-4">
                     <table class="table table-striped table-bordered">
-                        <thead class="table">
+                        <thead>
                             <tr>
+                                <th>Simpan</th>
                                 <th>ID Order</th>
+                                <th>Status</th> <!-- Kolom Status Baru -->
                                 <th>Kode</th>
                                 <th>Tanggal Pesan</th>
                                 <th>Tanggal Datang</th>
@@ -91,19 +93,69 @@ if (!isset($_SESSION['id_pengguna'])) {
                         </thead>
                         <tbody>
                             <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                            <tr>
+                            <tr id="row-<?= htmlspecialchars($row['id_pemesanan']) ?>">
+                                <td>
+                                    <button 
+                                        class="btn-simpan <?= $row['status'] === 'Tersimpan' ? 'disabled' : '' ?>" 
+                                        onclick="simpanRow('<?= htmlspecialchars($row['id_pemesanan']) ?>')"
+                                        <?= $row['status'] === 'Tersimpan' ? 'disabled' : '' ?>
+                                    >
+                                        <?= $row['status'] === 'Tersimpan' ? 'Disimpan' : 'Simpan' ?>
+                                    </button>
+                                </td>
                                 <td><?= htmlspecialchars($row['id_pemesanan']) ?></td>
+                                <td class="status-cell">
+                                    <?= htmlspecialchars($row['status']) ?>
+                                </td>
                                 <td><?= htmlspecialchars($row['kode_produk']) ?></td>
                                 <td><?= htmlspecialchars($row['tanggal_pesan']) ?></td>
                                 <td><?= htmlspecialchars($row['tanggal_datang']) ?></td>
                                 <td><?= htmlspecialchars($row['vendor']) ?></td>
                                 <td><?= htmlspecialchars($row['jumlah_pesan']) ?></td>
                                 <td><?= htmlspecialchars($row['jumlah_diterima']) ?></td>
-                                <td>Kosong Dulu</td>
+                                <td class="aksi-cell">
+                                    <button class="btn-lihat">Lihat</button>
+                                    <button class="btn-edit" <?= $row['status'] === 'Tersimpan' ? 'style="display:none"' : '' ?>>Edit</button>
+                                    <button class="btn-hapus">Hapus</button>
+                                </td>
                             </tr>
                             <?php endwhile; ?>
                         </tbody>
                     </table>
+
+                    <script>
+                        function simpanRow(rowId) {
+                        const row = document.getElementById(`row-${rowId}`);
+                        const simpanBtn = row.querySelector('.btn-simpan');
+                        const statusCell = row.querySelector('.status-cell');
+                        const editBtn = row.querySelector('.btn-edit');
+
+                        // Nonaktifkan tombol dan update tampilan
+                        simpanBtn.disabled = true;
+                        simpanBtn.textContent = 'Disimpan';
+                        statusCell.textContent = 'Tersimpan';
+                        editBtn.style.display = 'none';
+
+                        // Kirim permintaan ke server
+                        fetch('updateStatus.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `id=${rowId}&status=Tersimpan`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.success) {
+                                // Rollback jika gagal
+                                simpanBtn.disabled = false;
+                                simpanBtn.textContent = 'Simpan';
+                                statusCell.textContent = 'Pending';
+                                editBtn.style.display = 'inline-block';
+                                alert('Gagal menyimpan!');
+                            }
+                        });
+                    }
+                    </script>
+
                 </div>
         </main>
     </div>
