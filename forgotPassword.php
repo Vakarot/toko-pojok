@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'luthfank345@gmail.com'; // Ganti dengan email kamu
+            $mail->Username = ''; // Ganti dengan email kamu
             $mail->Password = ''; // Gunakan App Password Gmail
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
