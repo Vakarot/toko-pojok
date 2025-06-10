@@ -29,7 +29,7 @@
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Ingat Aku</label>
+                    <label class="form-check-label" for="rememberMe">Remember Me</label>
                     <a class="forgotPassword" href="forgotPassword.php">Forgot password?</a>
                 </div>
                 <div class="d-grid gap-2">
