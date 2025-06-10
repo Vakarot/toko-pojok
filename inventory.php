@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="inventoryStyle.css">
 </head>
 <body>
-    <div class="container">
+    <div class="wrapper">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
