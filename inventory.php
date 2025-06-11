@@ -69,8 +69,6 @@ if (!isset($_SESSION['id_pengguna'])) {
                 </div>
             </div>
 
-            <a class="btn btn-success" href="inventoryInput.php" role="button">Tambah Produk</a>
-
             <?php
                 include 'koneksi.php';
 
@@ -107,10 +105,9 @@ if (!isset($_SESSION['id_pengguna'])) {
                                 <td><?= formatRupiah($row['harga']) ?></td>
                                 <td><?= number_format($row['jumlah_stok']) ?></td>
                                 <td>
-                                    <a href="#">Edit</a>
-                                    <a href="form_edit.php?id=<?php echo $data['id'];?>">Hapus</a>
+                                    <a href="inventoryEdit.php">Edit</a>
+                                    <a href="#">Hapus</a>
                                 </td>
-                                
                             </tr>
                             <?php endwhile; ?>
                         </tbody>
