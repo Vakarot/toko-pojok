@@ -27,7 +27,6 @@
                 <div class="mb-3">
                     <input type="password" name="password" class="panjang form-control border border-success" placeholder="Password" required>
                 </div>
-                <!-- bagian remember me tetap -->
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="rememberMe">
                     <label class="form-check-label" for="rememberMe">Remember Me</label>

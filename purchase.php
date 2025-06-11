@@ -13,12 +13,12 @@ if (!isset($_SESSION['id_pengguna'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory</title>
+    <title>Purchase</title>
 
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="purchaseStyle.css">
@@ -67,99 +67,254 @@ if (!isset($_SESSION['id_pengguna'])) {
                     </div>
                 </div>
             </div>
+            <div>
+                <button class="btn btn-primary" onclick="window.location.href='addProduct.php'">Tambah Pemesanan</button>
+            </div>
 
             <?php
-                include 'koneksi.php';
 
-                $query = "SELECT * FROM pemesanan";
-                $result = mysqli_query($connect, $query);
-                ?>
+            include 'koneksi.php';
+            // Pastikan koneksi berhasil
+            $query = "SELECT 
+                p.id_pemesanan,
+                p.stat,
+                p.kode_produk,
+                p.tanggal_pesan,
+                p.tanggal_datang,
+                p.vendor,
+                p.jumlah_pesan,
+                p.jumlah_diterima,
+                pr.nama_produk,
+                pr.kategori,
+                pr.satuan,
+                pr.harga,
+                pr.jumlah_stok,
+                u.nama
+            FROM pemesanan p
+            LEFT JOIN produk pr ON p.kode_produk = pr.kode_produk
+            LEFT JOIN pengguna u ON p.id_pengguna = u.id_pengguna
+            ORDER BY p.tanggal_pesan DESC";
 
-                <div class="table-responsive mt-4">
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Simpan</th>
-                                <th>ID Order</th>
-                                <th>Status</th> <!-- Kolom Status Baru -->
-                                <th>Kode</th>
-                                <th>Tanggal Pesan</th>
-                                <th>Tanggal Datang</th>
-                                <th>Vendor</th>
-                                <th>Pesan</th>
-                                <th>Diterima</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                            <tr id="row-<?= htmlspecialchars($row['id_pemesanan']) ?>">
-                                <td>
-                                    <button 
-                                        class="btn-simpan <?= $row['status'] === 'Tersimpan' ? 'disabled' : '' ?>" 
-                                        onclick="simpanRow('<?= htmlspecialchars($row['id_pemesanan']) ?>')"
-                                        <?= $row['status'] === 'Tersimpan' ? 'disabled' : '' ?>
-                                    >
-                                        <?= $row['status'] === 'Tersimpan' ? 'Disimpan' : 'Simpan' ?>
-                                    </button>
-                                </td>
-                                <td><?= htmlspecialchars($row['id_pemesanan']) ?></td>
-                                <td class="status-cell">
-                                    <?= htmlspecialchars($row['status']) ?>
-                                </td>
-                                <td><?= htmlspecialchars($row['kode_produk']) ?></td>
-                                <td><?= htmlspecialchars($row['tanggal_pesan']) ?></td>
-                                <td><?= htmlspecialchars($row['tanggal_datang']) ?></td>
-                                <td><?= htmlspecialchars($row['vendor']) ?></td>
-                                <td><?= htmlspecialchars($row['jumlah_pesan']) ?></td>
-                                <td><?= htmlspecialchars($row['jumlah_diterima']) ?></td>
-                                <td class="aksi-cell">
-                                    <button class="btn-lihat">Lihat</button>
-                                    <button class="btn-edit" <?= $row['status'] === 'Tersimpan' ? 'style="display:none"' : '' ?>>Edit</button>
-                                    <button class="btn-hapus">Hapus</button>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+            $result = mysqli_query($connect, $query);
+            ?>
 
-                    <script>
-                        function simpanRow(rowId) {
-                        const row = document.getElementById(`row-${rowId}`);
-                        const simpanBtn = row.querySelector('.btn-simpan');
-                        const statusCell = row.querySelector('.status-cell');
-                        const editBtn = row.querySelector('.btn-edit');
-
-                        // Nonaktifkan tombol dan update tampilan
-                        simpanBtn.disabled = true;
-                        simpanBtn.textContent = 'Disimpan';
-                        statusCell.textContent = 'Tersimpan';
-                        editBtn.style.display = 'none';
-
-                        // Kirim permintaan ke server
-                        fetch('updateStatus.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                            body: `id=${rowId}&status=Tersimpan`
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (!data.success) {
-                                // Rollback jika gagal
-                                simpanBtn.disabled = false;
-                                simpanBtn.textContent = 'Simpan';
-                                statusCell.textContent = 'Pending';
-                                editBtn.style.display = 'inline-block';
-                                alert('Gagal menyimpan!');
-                            }
-                        });
-                    }
-                    </script>
-
+            <!-- Updated table structure -->
+            <div class="table-responsive mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4>Daftar Purchase Order</h4>
+                    <a href="addProduct.php" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tambah PO
+                    </a>
                 </div>
+                
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Aksi</th>
+                            <th>ID Order</th>
+                            <th>Status</th>
+                            <th>Produk</th>
+                            <th>Kategori</th>
+                            <th>Tanggal Pesan</th>
+                            <th>Tanggal Datang</th>
+                            <th>Vendor</th>
+                            <th>Qty Pesan</th>
+                            <th>Qty Diterima</th>
+                            <th>Harga Satuan</th>
+                            <th>Total Nilai</th>
+                            <th>Stok Saat Ini</th>
+                            <th>Operasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (mysqli_num_rows($result) > 0): ?>
+                            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                <?php 
+                                $totalNilai = $row['harga'] * $row['jumlah_diterima'];
+                                $statusClass = '';
+                                switch($row['stat']) {
+                                    case 'Tersimpan': $statusClass = 'success'; break;
+                                    case 'Pending': $statusClass = 'warning'; break;
+                                    case 'Dibatalkan': $statusClass = 'danger'; break;
+                                    default: $statusClass = 'secondary';
+                                }
+                                ?>
+                                <tr id="row-<?= htmlspecialchars($row['id_pemesanan']) ?>">
+                                    <td>
+                                        <button 
+                                            class="btn btn-sm btn-<?= $row['stat'] === 'Tersimpan' ? 'success' : 'outline-primary' ?> btn-simpan" 
+                                            onclick="simpanRow('<?= htmlspecialchars($row['id_pemesanan']) ?>')"
+                                            <?= $row['stat'] === 'Tersimpan' ? 'disabled' : '' ?>
+                                            title="<?= $row['stat'] === 'Tersimpan' ? 'Sudah disimpan ke inventory' : 'Simpan ke inventory' ?>"
+                                        >
+                                            <?= $row['stat'] === 'Tersimpan' ? '<i class="fas fa-check"></i> Disimpan' : '<i class="fas fa-save"></i> Simpan' ?>
+                                        </button>
+                                    </td>
+                                    <td><?= htmlspecialchars($row['id_pemesanan']) ?></td>
+                                    <td>
+                                        <span class="badge bg-<?= $statusClass ?> status-cell">
+                                            <?= htmlspecialchars($row['stat']) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <strong><?= htmlspecialchars($row['kode_produk']) ?></strong><br>
+                                            <small class="text-muted"><?= htmlspecialchars($row['nama_produk']) ?></small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info"><?= htmlspecialchars($row['kategori']) ?></span>
+                                    </td>
+                                    <td><?= date('d/m/Y', strtotime($row['tanggal_pesan'])) ?></td>
+                                    <td><?= date('d/m/Y', strtotime($row['tanggal_datang'])) ?></td>
+                                    <td><?= htmlspecialchars($row['vendor']) ?></td>
+                                    <td><?= number_format($row['jumlah_pesan']) ?></td>
+                                    <td><?= number_format($row['jumlah_diterima']) ?></td>
+                                    <td>Rp <?= number_format($row['harga'], 0, ',', '.') ?></td>
+                                    <td>
+                                        <strong>Rp <?= number_format($totalNilai, 0, ',', '.') ?></strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-<?= $row['jumlah_stok'] > 0 ? 'success' : 'warning' ?>">
+                                            <?= number_format($row['jumlah_stok']) ?>
+                                        </span>
+                                    </td>
+                                    <td class="aksi-cell">
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-info btn-lihat" 
+                                                    onclick="lihatDetail('<?= $row['id_pemesanan'] ?>')"
+                                                    title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning btn-edit" 
+                                                    onclick="editPemesanan('<?= $row['id_pemesanan'] ?>')"
+                                                    <?= $row['stat'] === 'Tersimpan' ? 'style="display:none"' : '' ?>
+                                                    title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-hapus" 
+                                                    onclick="hapusPemesanan('<?= $row['id_pemesanan'] ?>')"
+                                                    title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="14" class="text-center">
+                                    <div class="py-4">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Belum ada data purchase order</p>
+                                        <a href="input_purchase.php" class="btn btn-primary">Tambah PO Pertama</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <script>
+            function simpanRow(rowId) {
+                if (!confirm('Apakah Anda yakin ingin menyimpan data ini ke inventory? Setelah disimpan, data tidak dapat diubah.')) {
+                    return;
+                }
+                
+                const row = document.getElementById(`row-${rowId}`);
+                const simpanBtn = row.querySelector('.btn-simpan');
+                const statusCell = row.querySelector('.status-cell');
+                const editBtn = row.querySelector('.btn-edit');
+
+                // Tampilkan loading
+                const originalText = simpanBtn.innerHTML;
+                simpanBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+                simpanBtn.disabled = true;
+
+                // Kirim permintaan ke server
+                fetch('updateStatus.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `id=${rowId}&stat=Tersimpan`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update tampilan jika berhasil
+                        simpanBtn.innerHTML = '<i class="fas fa-check"></i> Disimpan';
+                        simpanBtn.className = 'btn btn-sm btn-success btn-simpan';
+                        statusCell.innerHTML = 'Tersimpan';
+                        statusCell.className = 'badge bg-success status-cell';
+                        editBtn.style.display = 'none';
+                        
+                        // Refresh halaman untuk update stok
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        // Rollback jika gagal
+                        simpanBtn.innerHTML = originalText;
+                        simpanBtn.disabled = false;
+                        alert('Gagal menyimpan: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    simpanBtn.innerHTML = originalText;
+                    simpanBtn.disabled = false;
+                    alert('Terjadi kesalahan sistem');
+                });
+            }
+
+            function lihatDetail(id) {
+                // Implementasi modal atau redirect ke halaman detail
+                window.open(`detailPurchase.php?id=${id}`, '_blank');
+            }
+
+            function editPemesanan(id) {
+                window.location.href = `editPurchase.php?id=${id}`;
+            }
+
+            function hapusPemesanan(id) {
+                if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                    fetch('deletePurchase.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `id=${id}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Data berhasil dihapus');
+                            location.reload();
+                        } else {
+                            alert('Gagal menghapus: ' + data.message);
+                        }
+                    });
+                }
+            }
+
+            // Filter dan search functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                // Add search functionality
+                const searchInput = document.querySelector('.search-input input');
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase();
+                        const rows = document.querySelectorAll('tbody tr');
+                        
+                        rows.forEach(row => {
+                            const text = row.textContent.toLowerCase();
+                            row.style.display = text.includes(searchTerm) ? '' : 'none';
+                        });
+                    });
+                }
+            });
+            </script>
+        </div>
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
