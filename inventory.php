@@ -107,10 +107,10 @@ $result = mysqli_query($connect, $query);
                             <?= htmlspecialchars($data['jumlah_stok']); ?>
                         </td>
                         <td>
-                            <a href="update.php?kode=<?= urlencode($data['kode_produk']); ?>" class="btn btn-outline-success btn-sm" title="Edit">
+                            <a href="inventoryEdit.php" class="btn btn-outline-success btn-sm" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="delete.php?kode=<?= urlencode($data['kode_produk']); ?>" class="btn btn-outline-danger btn-sm" title="Delete" onclick="return confirm('Yakin hapus produk ini?');">
+                            <a href="#" class="btn btn-outline-danger btn-sm" title="Delete" onclick="return confirm('Yakin hapus produk ini?');">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         </td>
