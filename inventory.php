@@ -72,7 +72,7 @@ if (!empty($search)) {
         <div class="header-top">
             <div>
                 <h1 class="header-title">Inventory</h1>
-                <div class="header-subtitle">Informasi produk dalam stok</div>
+                <div class="header-subtitle">Items Detail Information</div>
             </div>
             <div class="search-profile">
                 <form method="GET" class="d-flex">
