@@ -34,7 +34,7 @@
       box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
       max-width: 900px;
       margin: auto;
-      border-top: 6px solid #4CAF50;
+      border-top: 6px solid #218838;
       transition: transform 0.3s ease;
     }
 
@@ -43,7 +43,7 @@
     }
 
     h1 {
-      color: #4CAF50;
+      color: #218838;
       font-weight: 600;
       margin-bottom: 10px;
       text-align: center;
@@ -84,7 +84,7 @@
     }
 
     .btn-success {
-      background: linear-gradient(135deg, #4CAF50, #81C784);
+      background: #218838;
       border: none;
       padding: 12px 28px;
       border-radius: 14px;
@@ -94,7 +94,6 @@
     }
 
     .btn-success:hover {
-      background: linear-gradient(135deg, #43A047, #66BB6A);
       transform: scale(1.03);
     }
 

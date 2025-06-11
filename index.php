@@ -14,12 +14,13 @@ if (!isset($_SESSION['id_pengguna'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="indexStyle.css">
 </head>
 <body>
-    <div class="container">
+    <div class="wrapper">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo text-center">
@@ -39,7 +40,7 @@ if (!isset($_SESSION['id_pengguna'])) {
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="header">
+            <!-- <div class="header">
                 <div>
                     <h1>Hello Luthfan 👋</h1>
                     <p>Selamat Datang</p>
@@ -61,6 +62,45 @@ if (!isset($_SESSION['id_pengguna'])) {
                             <a href="#">Profil</a>
                             <a href="#">Logout</a>
                         </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="header-top">
+                <div>
+                    <h1 class="header-title">Hello Luthfan 👋</h1>
+                    <div class="header-subtitle">Selamat Datang</div>
+                </div>
+                <div class="search-profile">
+                    <input type="search" placeholder="Cari produk..." aria-label="Search products" />
+                    <div class="profile-dropdown dropdown">
+                        <div
+                            class="profile-icon rounded-circle shadow-sm"
+                            id="profileDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            role="button"
+                            tabindex="0"
+                            title="Profil"
+                        >
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <ul
+                            class="dropdown-menu dropdown-menu-end mt-2 rounded-3"
+                            aria-labelledby="profileDropdown"
+                        >
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                    <i class="fas fa-id-card text-success"></i> Profil
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -336,5 +376,7 @@ if (!isset($_SESSION['id_pengguna'])) {
             });
         }
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
