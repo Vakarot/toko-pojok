@@ -33,8 +33,8 @@ if (!isset($_SESSION['id_pengguna'])) {
             <nav>
                 <ul>
                     <li><a href="index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="inventory.php" class="active"><i class="fas fa-boxes"></i> Inventory</a></li>
-                    <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i> Purchase</a></li>
+                    <li><a href="inventory.php"><i class="fas fa-boxes"></i> Inventory</a></li>
+                    <li><a href="purchase.php" class="active"><i class="fas fa-shopping-cart"></i> Purchase</a></li>
                     <li><a href="cashier.php"><i class="fas fa-cash-register"></i> Cashier</a></li>
                     <li><a href="history.php"><i class="fas fa-history"></i> History</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i> Notifikasi</a></li>
