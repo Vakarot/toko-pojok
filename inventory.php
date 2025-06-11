@@ -93,6 +93,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                                 <th>Kadaluwarsa</th>
                                 <th>Harga</th>
                                 <th>Jumlah Stok</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,6 +106,11 @@ if (!isset($_SESSION['id_pengguna'])) {
                                 <td><?= htmlspecialchars($row['kadaluwarsa']) ?></td>
                                 <td><?= formatRupiah($row['harga']) ?></td>
                                 <td><?= number_format($row['jumlah_stok']) ?></td>
+                                <td>
+                                    <a href="#">Edit</a>
+                                    <a href="#">Hapus</a>
+                                </td>
+                                
                             </tr>
                             <?php endwhile; ?>
                         </tbody>
