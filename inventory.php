@@ -1,3 +1,14 @@
+<?php
+/*session_start();
+
+// Jika pengguna belum login, arahkan ke halaman login
+if (!isset($_SESSION['id_pengguna'])) {
+    echo "<script>alert('Silakan login terlebih dahulu.'); window.location.href='login.php';</script>";
+    exit();
+}*/
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +36,7 @@
                     <li><a href="index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                     <li><a href="inventory.php" class="active"><i class="fas fa-boxes"></i> Inventory</a></li>
                     <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i> Purchase</a></li>
-                    <li><a href="chasier.php"><i class="fas fa-cash-register"></i> Chasier</a></li>
+                    <li><a href="cashier.php"><i class="fas fa-cash-register"></i> Cashier</a></li>
                     <li><a href="history.php"><i class="fas fa-history"></i> History</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i> Notifikasi</a></li>
                 </ul>
@@ -57,6 +68,44 @@
                     </div>
                 </div>
             </div>
+
+            <?php
+                include 'koneksi.php';
+
+                function formatRupiah($angka) {
+                    return "Rp " . number_format($angka, 2, ',', '.');
+                }
+
+                $query = "SELECT kode_produk, kategori, nama_produk, satuan, harga, jumlah_stok FROM produk";
+                $result = mysqli_query($connect, $query);
+                ?>
+
+                <div class="table-responsive mt-4">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table">
+                            <tr>
+                                <th>Kode Produk</th>
+                                <th>Kategori</th>
+                                <th>Nama Produk</th>
+                                <th>Satuan</th>
+                                <th>Harga</th>
+                                <th>Jumlah Stok</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($row['kode_produk']) ?></td>
+                                <td><?= htmlspecialchars($row['kategori']) ?></td>
+                                <td><?= htmlspecialchars($row['nama_produk']) ?></td>
+                                <td><?= htmlspecialchars($row['satuan']) ?></td>
+                                <td><?= formatRupiah($row['harga']) ?></td>
+                                <td><?= number_format($row['jumlah_stok']) ?></td>
+                            </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
         </main>
     </div>
 
