@@ -69,6 +69,8 @@ if (!isset($_SESSION['id_pengguna'])) {
                 </div>
             </div>
 
+            <a class="btn btn-success" href="inventoryInput.php" role="button">Tambah Produk</a>
+
             <?php
                 include 'koneksi.php';
 
