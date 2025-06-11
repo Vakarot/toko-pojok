@@ -93,7 +93,7 @@ if (!isset($_SESSION['id_pengguna'])) {
             FROM pemesanan p
             LEFT JOIN produk pr ON p.kode_produk = pr.kode_produk
             LEFT JOIN pengguna u ON p.id_pengguna = u.id_pengguna
-            ORDER BY p.tanggal_pesan DESC";
+            ORDER BY p.stat DESC";
 
             $result = mysqli_query($connect, $query);
             ?>
