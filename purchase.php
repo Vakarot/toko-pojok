@@ -19,6 +19,8 @@ if (!isset($_SESSION['id_pengguna'])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="purchaseStyle.css">
 </head>
 <body>
@@ -152,7 +154,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                                 <th>Qty Diterima</th>
                                 <th>Harga Satuan</th>
                                 <th>Total Nilai</th>
-                                <th>Stok</th>
+                                <th>Stok Saat Ini</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -212,18 +214,18 @@ if (!isset($_SESSION['id_pengguna'])) {
                                             </span>
                                         </td>
                                         <td>
-                                            <button class="btn btn-info btn-action btn-lihat" 
+                                            <button class="btn btn-outline-info btn-action" 
                                                     onclick="lihatDetail('<?= $row['id_pemesanan'] ?>')"
                                                     title="Lihat Detail">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <button class="btn btn-success btn-action" 
+                                            <button class="btn btn-outline-success btn-action" 
                                                     onclick="editPemesanan('<?= $row['id_pemesanan'] ?>')"
                                                     <?= $row['stat'] === 'Tersimpan' ? 'style="display:none"' : '' ?>
                                                     title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button class="btn btn-danger btn-action" 
+                                            <button class="btn btn-outline-danger btn-action" 
                                                     onclick="hapusPemesanan('<?= $row['id_pemesanan'] ?>')"
                                                     title="Hapus">
                                                 <i class="fas fa-trash"></i>

@@ -325,6 +325,33 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Buttons */
+        /* .btn-outline-success {
+            border-radius: 8px;
+            font-size: 0.9rem;
+            padding: 0.25rem 0.6rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn-outline-success:hover {
+            background-color: #218838;
+            color: white;
+            border-color: #218838;
+        }
+
+        .btn-outline-danger {
+            border-radius: 8px;
+            font-size: 0.9rem;
+            padding: 0.25rem 0.6rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        } */
+
         /* Scrollbar Styling */
         .table-scroll::-webkit-scrollbar {
             height: 8px;
