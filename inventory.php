@@ -76,7 +76,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                     return "Rp " . number_format($angka, 2, ',', '.');
                 }
 
-                $query = "SELECT kode_produk, kategori, nama_produk, satuan, harga, jumlah_stok FROM produk";
+                $query = "SELECT kode_produk, kategori, nama_produk, satuan, kadaluwarsa, harga, jumlah_stok FROM produk";
                 $result = mysqli_query($connect, $query);
                 ?>
 
@@ -88,6 +88,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                                 <th>Kategori</th>
                                 <th>Nama Produk</th>
                                 <th>Satuan</th>
+                                <th>Kadaluwarsa</th>
                                 <th>Harga</th>
                                 <th>Jumlah Stok</th>
                             </tr>
@@ -99,6 +100,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                                 <td><?= htmlspecialchars($row['kategori']) ?></td>
                                 <td><?= htmlspecialchars($row['nama_produk']) ?></td>
                                 <td><?= htmlspecialchars($row['satuan']) ?></td>
+                                <td><?= htmlspecialchars($row['kadaluwarsa']) ?></td>
                                 <td><?= formatRupiah($row['harga']) ?></td>
                                 <td><?= number_format($row['jumlah_stok']) ?></td>
                             </tr>
