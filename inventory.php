@@ -108,7 +108,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                                 <td><?= number_format($row['jumlah_stok']) ?></td>
                                 <td>
                                     <a href="#">Edit</a>
-                                    <a href="#">Hapus</a>
+                                    <a href="form_edit.php?id=<?php echo $data['id'];?>">Hapus</a>
                                 </td>
                                 
                             </tr>
