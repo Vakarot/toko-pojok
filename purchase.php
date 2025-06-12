@@ -1,11 +1,14 @@
 <?php
-/*session_start();
+session_start();
 
 // Jika pengguna belum login, arahkan ke halaman login
 if (!isset($_SESSION['id_pengguna'])) {
     echo "<script>alert('Silakan login terlebih dahulu.'); window.location.href='login.php';</script>";
     exit();
-}*/
+}
+
+// Inisialisasi variabel search
+$search = isset($_GET['search']) ? $_GET['search'] : '';
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +28,7 @@ if (!isset($_SESSION['id_pengguna'])) {
 </head>
 <body>
     <div class="wrapper">
-        <!-- [Sidebar remains the same] -->
+        <!-- Sidebar -->
          <aside class="sidebar">
             <div class="logo text-center">
                 <img src="assets/logo.png" alt="Logo TokoPojok" />
@@ -45,22 +48,18 @@ if (!isset($_SESSION['id_pengguna'])) {
         <!-- Main Content -->
         <main class="main-content">         
             <div class="header-top">
-                <!-- [Header content remains the same] -->
-                 <div>
+                <div>
                     <h1 class="header-title">Purchase</h1>
                     <div class="header-subtitle">List of Products to Buy</div>
                 </div>
                 <div class="search-profile">
                     <form method="GET" class="d-flex">
                         <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari produk..." aria-label="Search products" class="form-control me-2" />
-                        <!-- <button type="submit" class="btn btn-outline-success me-2">
-                            <i class="fas fa-search"></i>
-                        </button> -->
-                        <!-- <?php if (!empty($search)): ?>
-                            <a href="inventory.php" class="btn btn-outline-secondary me-2">
+                        <?php if (!empty($search)): ?>
+                            <a href="purchase.php" class="btn btn-outline-secondary me-2">
                                 <i class="fas fa-times"></i>
                             </a>
-                        <?php endif; ?> -->
+                        <?php endif; ?>
                     </form>
                     <div class="profile-dropdown dropdown">
                         <div
@@ -96,7 +95,13 @@ if (!isset($_SESSION['id_pengguna'])) {
 
             <?php
                 include 'koneksi.php';
+                
                 // Pastikan koneksi berhasil
+                if (!$connect) {
+                    die("Koneksi database gagal: " . mysqli_connect_error());
+                }
+
+                // Query dengan filter search jika ada
                 $query = "SELECT 
                     p.id_pemesanan,
                     p.stat,
@@ -114,30 +119,32 @@ if (!isset($_SESSION['id_pengguna'])) {
                     u.nama
                 FROM pemesanan p
                 LEFT JOIN produk pr ON p.kode_produk = pr.kode_produk
-                LEFT JOIN pengguna u ON p.id_pengguna = u.id_pengguna
-                ORDER BY p.stat DESC";
+                LEFT JOIN pengguna u ON p.id_pengguna = u.id_pengguna";
+
+                // Tambahkan kondisi search jika ada
+                if (!empty($search)) {
+                    $search_escaped = mysqli_real_escape_string($connect, $search);
+                    $query .= " WHERE (pr.nama_produk LIKE '%$search_escaped%' 
+                                OR p.kode_produk LIKE '%$search_escaped%' 
+                                OR p.vendor LIKE '%$search_escaped%')";
+                }
+
+                $query .= " ORDER BY p.stat DESC, p.tanggal_pesan DESC";
 
                 $result = mysqli_query($connect, $query);
+                
+                if (!$result) {
+                    die("Query error: " . mysqli_error($connect));
+                }
             ?>
-
-            <!-- <button class="btn btn-success" onclick="window.location.href='addProduct.php'">
-                <i class="fas fa-plus me-2"></i>Tambah Pemesanan
-            </button> -->
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <button class="btn btn-success" onclick="window.location.href='addProduct.php'">
-                    <i class="fas fa-plus me-2"></i>Tambah Produk
+                    <i class="fas fa-plus me-2"></i>Tambah Pemesanan
                 </button>
             </div>
 
             <div class="table-container">
-                <!-- <div class="table-header">
-                    <h5 class="mb-0">Purchase Orders</h5>
-                    <button class="btn btn-success" onclick="window.location.href='addProduct.php'">
-                        <i class="fas fa-plus me-2"></i>Tambah Pemesanan
-                    </button>
-                </div> -->
-                
                 <div class="table-scroll">
                     <table class="table">
                         <thead>
@@ -162,7 +169,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                             <?php if (mysqli_num_rows($result) > 0): ?>
                                 <?php while ($row = mysqli_fetch_assoc($result)): ?>
                                     <?php 
-                                    $totalNilai = $row['harga'] * $row['jumlah_diterima'];
+                                    $totalNilai = ($row['harga'] ?? 0) * ($row['jumlah_diterima'] ?? 0);
                                     $statusClass = '';
                                     switch($row['stat']) {
                                         case 'Tersimpan': $statusClass = 'success'; break;
@@ -183,34 +190,34 @@ if (!isset($_SESSION['id_pengguna'])) {
                                             </button>
                                         </td>
                                         <td>
-                                            <span class="text-primary fw-bold"><?= htmlspecialchars($row['id_pemesanan']) ?></span>
+                                            <span class="text-primary fw-bold"><?= htmlspecialchars($row['id_pemesanan'] ?? '') ?></span>
                                         </td>
                                         <td>
-                                            <span class="badge badge-<?= $statusClass ?>">
-                                                <?= htmlspecialchars($row['stat']) ?>
+                                            <span class="badge bg-<?= $statusClass ?> status-cell">
+                                                <?= htmlspecialchars($row['stat'] ?? '') ?>
                                             </span>
                                         </td>
                                         <td>
                                             <div class="product-info">
-                                                <span class="product-code"><?= htmlspecialchars($row['kode_produk']) ?></span>
-                                                <span class="product-name"><?= htmlspecialchars($row['nama_produk']) ?></span>
+                                                <span class="product-code"><?= htmlspecialchars($row['kode_produk'] ?? '') ?></span>
+                                                <span class="product-name"><?= htmlspecialchars($row['nama_produk'] ?? '') ?></span>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info"><?= htmlspecialchars($row['kategori']) ?></span>
+                                            <span class="badge bg-info"><?= htmlspecialchars($row['kategori'] ?? '') ?></span>
                                         </td>
-                                        <td><?= date('d/m/Y', strtotime($row['tanggal_pesan'])) ?></td>
-                                        <td><?= date('d/m/Y', strtotime($row['tanggal_datang'])) ?></td>
-                                        <td><?= htmlspecialchars($row['vendor']) ?></td>
-                                        <td><?= number_format($row['jumlah_pesan']) ?></td>
-                                        <td><?= number_format($row['jumlah_diterima']) ?></td>
-                                        <td>Rp <?= number_format($row['harga'], 0, ',', '.') ?></td>
+                                        <td><?= $row['tanggal_pesan'] ? date('d/m/Y', strtotime($row['tanggal_pesan'])) : '-' ?></td>
+                                        <td><?= $row['tanggal_datang'] ? date('d/m/Y', strtotime($row['tanggal_datang'])) : '-' ?></td>
+                                        <td><?= htmlspecialchars($row['vendor'] ?? '') ?></td>
+                                        <td><?= number_format($row['jumlah_pesan'] ?? 0) ?></td>
+                                        <td><?= number_format($row['jumlah_diterima'] ?? 0) ?></td>
+                                        <td>Rp <?= number_format($row['harga'] ?? 0, 0, ',', '.') ?></td>
                                         <td>
                                             <strong>Rp <?= number_format($totalNilai, 0, ',', '.') ?></strong>
                                         </td>
                                         <td>
-                                            <span class="badge bg-<?= $row['jumlah_stok'] > 0 ? 'success' : 'warning' ?>">
-                                                <?= number_format($row['jumlah_stok']) ?>
+                                            <span class="badge bg-<?= ($row['jumlah_stok'] ?? 0) > 0 ? 'success' : 'warning' ?>">
+                                                <?= number_format($row['jumlah_stok'] ?? 0) ?>
                                             </span>
                                         </td>
                                         <td>
@@ -219,7 +226,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                                                     title="Lihat Detail">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <button class="btn btn-outline-success btn-action" 
+                                            <button class="btn btn-outline-success btn-action btn-edit" 
                                                     onclick="editPemesanan('<?= $row['id_pemesanan'] ?>')"
                                                     <?= $row['stat'] === 'Tersimpan' ? 'style="display:none"' : '' ?>
                                                     title="Edit">
@@ -240,11 +247,17 @@ if (!isset($_SESSION['id_pengguna'])) {
                                             <div class="empty-state-icon">
                                                 <i class="fas fa-inbox"></i>
                                             </div>
-                                            <h5 class="mb-2">Belum ada data purchase order</h5>
-                                            <p class="text-muted mb-3">Mulai dengan menambahkan purchase order pertama Anda</p>
-                                            <a href="input_purchase.php" class="btn btn-primary">
-                                                <i class="fas fa-plus me-2"></i>Tambah PO
-                                            </a>
+                                            <h5 class="mb-2">
+                                                <?= !empty($search) ? 'Tidak ada hasil pencarian' : 'Belum ada data purchase order' ?>
+                                            </h5>
+                                            <p class="text-muted mb-3">
+                                                <?= !empty($search) ? 'Coba kata kunci lain' : 'Mulai dengan menambahkan purchase order pertama Anda' ?>
+                                            </p>
+                                            <?php if (empty($search)): ?>
+                                                <a href="addPurchase.php" class="btn btn-primary">
+                                                    <i class="fas fa-plus me-2"></i>Tambah PO
+                                                </a>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
@@ -254,8 +267,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                 </div>
             </div>
 
-            <!-- [JavaScript remains the same] -->
-             <script>
+            <script>
                 function simpanRow(rowId) {
                     if (!confirm('Apakah Anda yakin ingin menyimpan data ini ke inventory? Setelah disimpan, data tidak dapat diubah.')) {
                         return;
@@ -281,11 +293,12 @@ if (!isset($_SESSION['id_pengguna'])) {
                     .then(data => {
                         if (data.success) {
                             // Update tampilan jika berhasil
-                            simpanBtn.innerHTML = '<i class="fas fa-check"></i> Disimpan';
+                            simpanBtn.innerHTML = '<i class="fas fa-check"></i>';
                             simpanBtn.className = 'btn btn-sm btn-success btn-simpan';
+                            simpanBtn.disabled = true;
                             statusCell.innerHTML = 'Tersimpan';
                             statusCell.className = 'badge bg-success status-cell';
-                            editBtn.style.display = 'none';
+                            if (editBtn) editBtn.style.display = 'none';
                             
                             // Refresh halaman untuk update stok
                             setTimeout(() => {
@@ -295,10 +308,11 @@ if (!isset($_SESSION['id_pengguna'])) {
                             // Rollback jika gagal
                             simpanBtn.innerHTML = originalText;
                             simpanBtn.disabled = false;
-                            alert('Gagal menyimpan: ' + data.message);
+                            alert('Gagal menyimpan: ' + (data.message || 'Error tidak diketahui'));
                         }
                     })
                     .catch(error => {
+                        console.error('Error:', error);
                         simpanBtn.innerHTML = originalText;
                         simpanBtn.disabled = false;
                         alert('Terjadi kesalahan sistem');
@@ -327,25 +341,27 @@ if (!isset($_SESSION['id_pengguna'])) {
                                 alert('Data berhasil dihapus');
                                 location.reload();
                             } else {
-                                alert('Gagal menghapus: ' + data.message);
+                                alert('Gagal menghapus: ' + (data.message || 'Error tidak diketahui'));
                             }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Terjadi kesalahan sistem');
                         });
                     }
                 }
 
                 // Filter dan search functionality
                 document.addEventListener('DOMContentLoaded', function() {
-                    // Add search functionality
-                    const searchInput = document.querySelector('.search-input input');
+                    // Auto submit search form on input
+                    const searchInput = document.querySelector('input[name="search"]');
                     if (searchInput) {
+                        let timeout;
                         searchInput.addEventListener('input', function() {
-                            const searchTerm = this.value.toLowerCase();
-                            const rows = document.querySelectorAll('tbody tr');
-                            
-                            rows.forEach(row => {
-                                const text = row.textContent.toLowerCase();
-                                row.style.display = text.includes(searchTerm) ? '' : 'none';
-                            });
+                            clearTimeout(timeout);
+                            timeout = setTimeout(() => {
+                                this.form.submit();
+                            }, 500); // Delay 500ms untuk menghindari terlalu banyak request
                         });
                     }
                 });
