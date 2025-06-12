@@ -6,8 +6,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="historyStyle.css">
-    <title>History</title>
+    <link rel="stylesheet" href="notifikasiStyle.css">
+    <title>Notifikasi</title>
 </head>
 <body>
     <div class="wrapper">
@@ -21,8 +21,8 @@
                     <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
                     <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
                     <li><a href="cashier.php"><i class="fas fa-cash-register"></i>Cashier</a></li>
-                    <li><a href="history.php" class="active"><i class="fas fa-history"></i>History</a></li>
-                    <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
+                    <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
+                    <li><a href="notifikasi.php" class="active"><i class="fas fa-bell"></i>Notifikasi</a></li>
                 </ul>
             </nav>
         </aside>
@@ -30,8 +30,8 @@
         <main class="main-content">
             <div class="header-top">
                 <div>
-                    <h1 class="header-title">History</h1>
-                    <div class="header-subtitle">List of Employee Activity</div>
+                    <h1 class="header-title">Notification</h1>
+                    <div class="header-subtitle">Latest Alerts and Updates</div>
                 </div>
                 <div class="search-profile">
                     <form method="GET" class="d-flex">

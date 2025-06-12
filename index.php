@@ -14,13 +14,13 @@ if (!isset($_SESSION['id_pengguna'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="indexStyle.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
+    <div class="wrapper">
         <aside class="sidebar">
             <div class="logo text-center">
                 <img src="assets/logo.png" alt="Logo TokoPojok" />
@@ -39,131 +39,150 @@ if (!isset($_SESSION['id_pengguna'])) {
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="header">
+            <div class="header-top">
                 <div>
-                    <h1>Hello Luthfan 👋</h1>
-                    <p>Selamat Datang</p>
+                    <h1 class="header-title">Hello Luthfan 👋</h1>
+                    <div class="header-subtitle">Selamat Datang</div>
                 </div>
-                <div class="search-bar">
-                    <div class="search-input">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search">
-                    </div>
-                    <div class="user-info dropdown">
-                        <div class="profile-box">
-                            <img src="https://storage.googleapis.com/a1aa/image/zo6PP4KS4jRPqjjFfiTVERFXjtMKO3D52JBI0TsGCII.jpg" alt="User Avatar">
+                <div class="search-profile">
+                    <input type="search" placeholder="Cari produk..." aria-label="Search products" />
+                    <div class="profile-dropdown dropdown">
+                        <div
+                            class="profile-icon rounded-circle shadow-sm"
+                            id="profileDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            role="button"
+                            tabindex="0"
+                            title="Profil"
+                        >
+                            <i class="fas fa-user"></i>
                         </div>
-                        <div>
-                            <p>Luthfan Kafi</p>
-                            <p>Owner</p>
-                        </div>
-                        <div class="dropdown-menu">
-                            <a href="#">Profil</a>
-                            <a href="#">Logout</a>
-                        </div>
+                        <ul
+                            class="dropdown-menu dropdown-menu-end mt-2 rounded-3"
+                            aria-labelledby="profileDropdown"
+                        >
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                                    <i class="fas fa-id-card text-success"></i> Profil
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Summary Cards -->
+            <!-- Improved Summary Cards -->
             <section class="summary">
-                <div class="card">
-                    <div class="icon-container icon-money">
+                <div class="summary-card">
+                    <div class="summary-icon sales">
                         <i class="fas fa-money-bill-wave"></i>
                     </div>
-                    <div class="card-content">
-                        <p>Rp 765,000</p>
-                        <span>Total Penjualan Hari Ini</span>
+                    <div class="summary-content">
+                        <h3>Rp 765,000</h3>
+                        <p>Total Penjualan Hari Ini</p>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="icon-container icon-chart">
+                <div class="summary-card">
+                    <div class="summary-icon revenue">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <div class="card-content">
-                        <p>Rp 229,500,000</p>
-                        <span>Total Penjualan Bulan Ini</span>
+                    <div class="summary-content">
+                        <h3>Rp 229,500,000</h3>
+                        <p>Total Penjualan Bulan Ini</p>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="icon-container icon-receipt">
+                <div class="summary-card">
+                    <div class="summary-icon transactions">
                         <i class="fas fa-receipt"></i>
                     </div>
-                    <div class="card-content">
-                        <p>153</p>
-                        <span>Transaksi Hari Ini</span>
+                    <div class="summary-content">
+                        <h3>153</h3>
+                        <p>Transaksi Hari Ini</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Charts and Products -->
-            <section class="content">
-                <div class="chart-section">
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h2>Laporan Penjualan</h2>
-                            <select id="filterTahun" class="filter-tahun" onchange="updateChart()">
-                                <option value="2025" selected>2025</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                            </select>
-                        </div>
+            <!-- Improved Charts and Products -->
+            <section class="content-grid">
+                <!-- <div class="chart-container">
+                    <div class="chart-header">
+                        <h2>Laporan Penjualan</h2>
+                        <select class="chart-filter" id="filterTahun">
+                            <option value="2025" selected>2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                        </select>
+                    </div>
+                    <canvas id="penjualanChart"></canvas>
+                </div> -->
+
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2>Laporan Penjualan</h2>
+                        <select class="chart-filter" id="filterTahun">
+                            <option value="2025" selected>2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                        </select>
+                    </div>
+                    <div class="chart-wrapper" style="height: 300px; position: relative;">
                         <canvas id="penjualanChart"></canvas>
                     </div>
                 </div>
-                <div class="top-products outer-card">
-                    <h2>Produk Terlaris</h2>
-                    <div class="top-products-cards">
-                        <div class="top-product-card">
-                            <div class="product-rank">1</div>
-                            <div class="product-info">
-                                <div class="product-name">Bonanza F1</div>
-                                <div class="product-sales">320 unit</div>
-                            </div>
+                <div class="products-container">
+                    <div class="products-header">
+                        <h2>Produk Terlaris</h2>
+                    </div>
+                    <div class="products-list">
+                        <div class="product-item">
+                            <span class="product-rank">1</span>
+                            <span class="product-name">Bonanza F1</span>
+                            <span class="product-sales">320 unit</span>
                         </div>
-                        <div class="top-product-card">
-                            <div class="product-rank">2</div>
-                            <div class="product-info">
-                                <div class="product-name">Jagung Ketan F1</div>
-                                <div class="product-sales">290 unit</div>
-                            </div>
+                        <div class="product-item">
+                            <span class="product-rank">2</span>
+                            <span class="product-name">Jagung Ketan F1</span>
+                            <span class="product-sales">290 unit</span>
                         </div>
-                        <div class="top-product-card">
-                            <div class="product-rank">3</div>
-                            <div class="product-info">
-                                <div class="product-name">Mapan P-01</div>
-                                <div class="product-sales">270 unit</div>
-                            </div>
+                        <div class="product-item">
+                            <span class="product-rank">3</span>
+                            <span class="product-name">Mapan P-01</span>
+                            <span class="product-sales">270 unit</span>
                         </div>
-                        <div class="top-product-card">
-                            <div class="product-rank">4</div>
-                            <div class="product-info">
-                                <div class="product-name">Cakrabuana 04</div>
-                                <div class="product-sales">250 unit</div>
-                            </div>
+                        <div class="product-item">
+                            <span class="product-rank">4</span>
+                            <span class="product-name">Cakrabuana 04</span>
+                            <span class="product-sales">250 unit</span>
                         </div>
-                        <div class="top-product-card">
-                            <div class="product-rank">5</div>
-                            <div class="product-info">
-                                <div class="product-name">Dewata 43 F1</div>
-                                <div class="product-sales">230 unit</div>
-                            </div>
+                        <div class="product-item">
+                            <span class="product-rank">5</span>
+                            <span class="product-name">Dewata 43 F1</span>
+                            <span class="product-sales">230 unit</span>
                         </div>
+                        <!-- Produk lainnya dengan struktur yang sama -->
                     </div>
                 </div>
             </section>
 
-            <!-- Tables -->
-            <section class="tables">
-                <div class="table-card">
-                    <div class="table-card-header">
+            <!-- Improved Tables Section -->
+            <section class="tables-grid">
+                <div class="table-container">
+                    <div class="table-header">
                         <h2>Stok Hampir Habis</h2>
-                        <select class="table-filter" id="stokFilter" onchange="sortStokTable()">
+                        <select class="table-filter" id="stokFilter">
                             <option value="asc">Stok Ascending</option>
                             <option value="desc">Stok Descending</option>
                         </select>
                     </div>
-                    <table class="table" id="stokTable">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>Kode Produk</th>
@@ -194,17 +213,16 @@ if (!isset($_SESSION['id_pengguna'])) {
                         </tbody>
                     </table>
                 </div>
-                <div class="table-card">
-                    <div class="table-card-header">
-                        <h2>Kedaluwarsa Dekat <span style="color: #4a7c59;">7 Hari</span></h2>
-                        <select class="table-filter" id="expFilter" onchange="filterExpTable()">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Kedaluwarsa Dekat</h2>
+                        <select class="table-filter" id="expFilter">
                             <option value="7">7 Hari</option>
                             <option value="30">1 Bulan</option>
                             <option value="custom">Custom</option>
                         </select>
-                        <input type="date" id="expCustomDate" style="display:none; margin-left:8px;" onchange="filterExpTable()" />
                     </div>
-                    <table class="table" id="expTable">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>Kode Produk</th>
@@ -241,7 +259,8 @@ if (!isset($_SESSION['id_pengguna'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Chart.js
+        // Enhanced Chart.js with Animation
+        // Ganti script chart dengan ini
         const ctx = document.getElementById('penjualanChart').getContext('2d');
         const penjualanChart = new Chart(ctx, {
             type: 'bar',
@@ -250,64 +269,108 @@ if (!isset($_SESSION['id_pengguna'])) {
                 datasets: [{
                     label: 'Jumlah Penjualan',
                     data: [120, 150, 180, 200, 250, 300, 280, 270, 260, 310, 320, 400],
-                    backgroundColor: [
-                        'rgba(76, 175, 80, 0.7)',
-                    ],
-                    borderRadius: 16,
+                    backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                    borderRadius: 8,
                     borderSkipped: false,
-                    maxBarThickness: 38
                 }]
             },
             options: {
                 responsive: true,
-                aspectRatio: 2.2,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 20,
+                        bottom: 20,
+                        left: 20,
+                        right: 20
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart',
+                },
                 plugins: {
-                    legend: { display: false },
+                    legend: { 
+                        display: false 
+                    },
                     tooltip: {
-                        backgroundColor: '#4caf50',
+                        backgroundColor: '#28a745',
                         titleColor: '#fff',
                         bodyColor: '#fff',
-                        borderColor: '#e6f4ea',
+                        borderColor: 'rgba(255,255,255,0.2)',
                         borderWidth: 1,
                         padding: 12,
-                        caretSize: 8,
-                        cornerRadius: 8
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' unit';
+                            }
+                        }
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Unit Terjual' },
-                        grid: { color: '#e6f4ea' },
-                        ticks: { stepSize: 50 }
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            stepSize: 100,
+                            padding: 10,
+                            callback: function(value) {
+                                return value + ' unit';
+                            }
+                        }
                     },
                     x: {
-                        title: { display: true, text: 'Bulan' },
-                        grid: { display: false }
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10
+                        }
                     }
                 }
             }
         });
 
-        // Stok Table Sort
-        function sortStokTable() {
-            const table = document.getElementById('stokTable').getElementsByTagName('tbody')[0];
-            const rows = Array.from(table.rows);
-            const order = document.getElementById('stokFilter').value;
-            rows.sort((a, b) => {
-                const stokA = parseInt(a.cells[3].innerText);
-                const stokB = parseInt(b.cells[3].innerText);
-                return order === 'asc' ? stokA - stokB : stokB - stokA;
-            });
-            rows.forEach(row => table.appendChild(row));
-        }
+        // Enhanced Table Sorting with Animation
+        document.getElementById('stokFilter').addEventListener('change', function() {
+            const table = document.querySelector('.table-container:first-child table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const order = this.value;
+            
+            // Add fade out effect
+            tbody.style.opacity = '0.5';
+            tbody.style.transition = 'opacity 0.3s ease';
+            
+            setTimeout(() => {
+                rows.sort((a, b) => {
+                    const aStok = parseInt(a.cells[3].textContent);
+                    const bStok = parseInt(b.cells[3].textContent);
+                    return order === 'asc' ? aStok - bStok : bStok - aStok;
+                });
+                
+                // Rebuild table with sorted rows
+                rows.forEach(row => tbody.appendChild(row));
+                
+                // Fade back in
+                tbody.style.opacity = '1';
+            }, 300);
+        });
 
-        // Exp Table Filter
+        // Enhanced Expiry Table Filter
         document.getElementById('expFilter').addEventListener('change', function() {
+            const customDateInput = document.getElementById('expCustomDate');
             if (this.value === 'custom') {
-                document.getElementById('expCustomDate').style.display = 'inline-block';
+                customDateInput.style.display = 'inline-block';
+                customDateInput.focus();
             } else {
-                document.getElementById('expCustomDate').style.display = 'none';
+                customDateInput.style.display = 'none';
                 filterExpTable();
             }
         });
@@ -315,26 +378,55 @@ if (!isset($_SESSION['id_pengguna'])) {
         function filterExpTable() {
             const filter = document.getElementById('expFilter').value;
             const customDate = document.getElementById('expCustomDate').value;
-            const table = document.getElementById('expTable').getElementsByTagName('tbody')[0];
-            const rows = Array.from(table.rows);
+            const table = document.querySelector('.table-container:last-child table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
             const now = new Date();
             let maxDate;
-            if (filter === '7') {
-                maxDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7);
-            } else if (filter === '30') {
-                maxDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30);
-            } else if (filter === 'custom' && customDate) {
-                maxDate = new Date(customDate.split('-').reverse().join('-'));
-            } else {
-                rows.forEach(row => row.style.display = '');
-                return;
-            }
-            rows.forEach(row => {
-                const tgl = row.cells[3].innerText.split('-').reverse().join('-');
-                const tglDate = new Date(tgl);
-                row.style.display = tglDate <= maxDate ? '' : 'none';
-            });
+            
+            // Add fade out effect
+            tbody.style.opacity = '0.5';
+            tbody.style.transition = 'opacity 0.3s ease';
+            
+            setTimeout(() => {
+                if (filter === '7') {
+                    maxDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7);
+                } else if (filter === '30') {
+                    maxDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30);
+                } else if (filter === 'custom' && customDate) {
+                    maxDate = new Date(customDate);
+                } else {
+                    rows.forEach(row => row.style.display = '');
+                    tbody.style.opacity = '1';
+                    return;
+                }
+                
+                rows.forEach(row => {
+                    const dateParts = row.cells[3].textContent.split('-');
+                    const tglDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+                    row.style.display = tglDate <= maxDate ? '' : 'none';
+                });
+                
+                // Fade back in
+                tbody.style.opacity = '1';
+            }, 300);
         }
+
+        // Update chart when year filter changes
+        document.getElementById('filterTahun').addEventListener('change', function() {
+            // Simulate data change based on year
+            const yearData = {
+                '2025': [120, 150, 180, 200, 250, 300, 280, 270, 260, 310, 320, 400],
+                '2024': [100, 130, 160, 180, 220, 280, 260, 250, 240, 290, 300, 380],
+                '2023': [80, 110, 140, 160, 200, 250, 230, 220, 210, 260, 270, 350]
+            };
+            
+            // Animate chart update
+            penjualanChart.data.datasets[0].data = yearData[this.value];
+            penjualanChart.update();
+        });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -72,19 +72,19 @@ if (!empty($search)) {
         <div class="header-top">
             <div>
                 <h1 class="header-title">Inventory</h1>
-                <div class="header-subtitle">Informasi produk dalam stok</div>
+                <div class="header-subtitle">Items Detail Information</div>
             </div>
             <div class="search-profile">
                 <form method="GET" class="d-flex">
                     <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari produk..." aria-label="Search products" class="form-control me-2" />
-                    <button type="submit" class="btn btn-outline-success me-2">
+                    <!-- <button type="submit" class="btn btn-outline-success me-2">
                         <i class="fas fa-search"></i>
-                    </button>
-                    <?php if (!empty($search)): ?>
+                    </button> -->
+                    <!-- <?php if (!empty($search)): ?>
                         <a href="inventory.php" class="btn btn-outline-secondary me-2">
                             <i class="fas fa-times"></i>
                         </a>
-                    <?php endif; ?>
+                    <?php endif; ?> -->
                 </form>
                 <div class="profile-dropdown dropdown">
                     <div
@@ -159,7 +159,7 @@ if (!empty($search)) {
                         <?php while ($data = mysqli_fetch_assoc($result)) : ?>
                         <tr>
                             <td><?= htmlspecialchars($data['kode_produk']); ?></td>
-                            <td><span class="badge bg-secondary"><?= ucfirst(htmlspecialchars($data['kategori'])); ?></span></td>
+                            <td><?= ucfirst(htmlspecialchars($data['kategori'])); ?></span></td>
                             <td><?= htmlspecialchars($data['nama_produk']); ?></td>
                             <td><?= htmlspecialchars($data['satuan']); ?></td>
                             <td><?= htmlspecialchars($data['kadaluwarsa']); ?></td>
