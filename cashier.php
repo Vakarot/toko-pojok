@@ -2,8 +2,15 @@
 session_start();
 include 'koneksi.php';
 
+$id_pengguna = $_SESSION['id_pengguna'] ?? 'IC250001'; // Default user ID for testing
+
 function formatRupiah($angka) {
     return "Rp " . number_format($angka, 0, ',', '.');
+}
+
+// Generate unique order ID for display
+function generateOrderId() {
+    return 'ORD' . date('Ymd') . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
 }
 
 // Initialize cart if not exists
@@ -84,6 +91,9 @@ if (!empty($search)) {
 } else {
     $result = mysqli_query($connect, $query);
 }
+
+// Generate order ID for display
+$display_order_id = generateOrderId();
 ?>
 
 <!DOCTYPE html>
@@ -98,6 +108,47 @@ if (!empty($search)) {
     <link rel="stylesheet" href="cashierStyle.css" />
 </head>
 <body class="bg-white text-black">
+    <!-- Success/Error Messages -->
+    <?php if (isset($_GET['success']) && isset($_SESSION['success_message'])): ?>
+        <div id="successAlert" class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50 max-w-md">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span><?= htmlspecialchars($_SESSION['success_message']); ?></span>
+                </div>
+                <button onclick="document.getElementById('successAlert').style.display='none'" class="text-green-700 hover:text-green-900">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <?php if (isset($_SESSION['order_details'])): ?>
+                <div class="mt-2 text-sm">
+                    <p>Total: <?= formatRupiah($_SESSION['order_details']['total_harga']); ?></p>
+                    <p>Items: <?= $_SESSION['order_details']['total_items']; ?></p>
+                    <p>Metode: <?= ucfirst($_SESSION['order_details']['payment_method']); ?></p>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php 
+        unset($_SESSION['success_message']);
+        unset($_SESSION['order_details']);
+        ?>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error']) && isset($_SESSION['error_message'])): ?>
+        <div id="errorAlert" class="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50 max-w-md">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span><?= htmlspecialchars($_SESSION['error_message']); ?></span>
+                </div>
+                <button onclick="document.getElementById('errorAlert').style.display='none'" class="text-red-700 hover:text-red-900">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <?php unset($_SESSION['error_message']); ?>
+    <?php endif; ?>
+
     <div class="min-h-screen flex">
         <!-- Sidebar -->
         <aside class="sidebar">
@@ -205,7 +256,7 @@ if (!empty($search)) {
                                 </div>
                                 <div>
                                     <h2 class="font-semibold text-sm text-black">Pesanan</h2>
-                                    <p class="text-xs text-gray-400">Order ID <?= date('His') ?></p>
+                                    <p class="text-xs text-gray-400">Order ID <?= $display_order_id ?></p>
                                 </div>
                             </div>
                             <form method="POST" class="inline">
@@ -303,6 +354,7 @@ if (!empty($search)) {
                 <div class="mb-6">
                     <p class="text-sm text-gray-600 mb-2">Total Pembayaran:</p>
                     <p class="text-2xl font-bold text-green-600"><?= formatRupiah($total_harga); ?></p>
+                    <p class="text-sm text-gray-500 mt-1">Order ID: <?= $display_order_id ?></p>
                 </div>
                 
                 <div class="space-y-3">
@@ -330,6 +382,11 @@ if (!empty($search)) {
         }
         
         function processPayment(method) {
+            // Show loading state
+            const modal = document.getElementById('paymentModal');
+            const buttons = modal.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+            
             // Create form and submit
             const form = document.createElement('form');
             form.method = 'POST';
@@ -351,6 +408,14 @@ if (!empty($search)) {
                 hidePaymentModal();
             }
         });
+
+        // Auto hide alerts after 5 seconds
+        setTimeout(function() {
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            if (successAlert) successAlert.style.display = 'none';
+            if (errorAlert) errorAlert.style.display = 'none';
+        }, 5000);
     </script>
 </body>
 </html>
