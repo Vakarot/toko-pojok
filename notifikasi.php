@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="notifikasiStyle.css">
     <title>Notifikasi</title>
 </head>
@@ -30,17 +30,14 @@
         <main class="main-content">
             <div class="header-top">
                 <div>
-                    <h1 class="header-title">Notification</h1>
-                    <div class="header-subtitle">Latest Alerts and Updates</div>
+                    <h1 class="header-title">Notifications</h1>
+                    <div class="header-subtitle">Stay updated with recent activities</div>
                 </div>
                 <div class="search-profile">
                     <form method="GET" class="d-flex">
-                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari produk..." aria-label="Search products" class="form-control me-2" />
-                        <!-- <button type="submit" class="btn btn-outline-success me-2">
-                            <i class="fas fa-search"></i>
-                        </button> -->
+                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search notifications..." aria-label="Search notifications" class="form-control me-2" />
                         <?php if (!empty($search)): ?>
-                            <a href="inventory.php" class="btn btn-outline-secondary me-2">
+                            <a href="notifikasi.php" class="btn btn-outline-secondary me-2">
                                 <i class="fas fa-times"></i>
                             </a>
                         <?php endif; ?>
@@ -77,30 +74,145 @@
                 </div>
             </div>
 
-            <?php if (isset($success_message)): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i><?= htmlspecialchars($success_message) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="notification-container">
+                <div class="notification-header">
+                    <div class="notification-title">Recent Notifications</div>
+                    <div class="notification-badge">4 New</div>
                 </div>
-            <?php endif; ?>
-
-            <?php if (isset($error_message)): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-circle me-2"></i><?= htmlspecialchars($error_message) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                
+                <!-- Notification Items -->
+                <div class="notification-item order">
+                    <div class="notification-icon order">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-category">
+                            New Order
+                            <span class="badge bg-primary">Order</span>
+                        </div>
+                        <div class="notification-text">Luthfan Kafi placed a new order with ID #24020. Please process the order.</div>
+                        <div class="notification-meta">
+                            <div class="notification-time">Today, 10:30 AM</div>
+                            <div class="notification-actions">
+                                <button class="notification-btn mark-read"><i class="far fa-check-circle"></i> Mark as read</button>
+                                <button class="notification-btn delete"><i class="far fa-trash-alt"></i> Delete</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            <?php endif; ?>
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <?php if (!empty($search)): ?>
-                        <small class="text-muted">Hasil pencarian untuk: "<?= htmlspecialchars($search) ?>"</small>
-                    <?php endif; ?>
+                
+                <div class="notification-item warning">
+                    <div class="notification-icon warning">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-category">
+                            Low Stock Alert
+                            <span class="badge bg-danger">Urgent</span>
+                        </div>
+                        <div class="notification-text">Stock for Avidor 25 WP is running low (only 5 units left). Please restock immediately.</div>
+                        <div class="notification-meta">
+                            <div class="notification-time">Yesterday, 3:45 PM</div>
+                            <div class="notification-actions">
+                                <button class="notification-btn mark-read"><i class="far fa-check-circle"></i> Mark as read</button>
+                                <button class="notification-btn delete"><i class="far fa-trash-alt"></i> Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="notification-item warning">
+                    <div class="notification-icon warning">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-category">
+                            Low Stock Alert
+                            <span class="badge bg-danger">Urgent</span>
+                        </div>
+                        <div class="notification-text">Stock for FOSTIN 610 EC is critically low (only 3 units left). Please restock immediately.</div>
+                        <div class="notification-meta">
+                            <div class="notification-time">Yesterday, 1:20 PM</div>
+                            <div class="notification-actions">
+                                <button class="notification-btn mark-read"><i class="far fa-check-circle"></i> Mark as read</button>
+                                <button class="notification-btn delete"><i class="far fa-trash-alt"></i> Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="notification-item expiry">
+                    <div class="notification-icon expiry">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-category">
+                            Expiry Alert
+                            <span class="badge bg-warning text-dark">Warning</span>
+                        </div>
+                        <div class="notification-text">Tebu Telur will expire in 7 days (April 30, 2025). Please take action.</div>
+                        <div class="notification-meta">
+                            <div class="notification-time">April 23, 2025, 9:15 AM</div>
+                            <div class="notification-actions">
+                                <button class="notification-btn mark-read"><i class="far fa-check-circle"></i> Mark as read</button>
+                                <button class="notification-btn delete"><i class="far fa-trash-alt"></i> Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="notification-divider"></div>
+                
+                <!-- Archived Notifications -->
+                <div class="notification-header" style="margin-top: 1.5rem;">
+                    <div class="notification-title">Earlier Notifications</div>
+                </div>
+                
+                <div class="notification-item">
+                    <div class="notification-icon" style="background-color: rgba(23, 162, 184, 0.1); color: #17a2b8;">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-category">
+                            Delivery Completed
+                            <span class="badge bg-info">Delivery</span>
+                        </div>
+                        <div class="notification-text">Order #24015 has been successfully delivered to the customer.</div>
+                        <div class="notification-meta">
+                            <div class="notification-time">April 22, 2025, 2:30 PM</div>
+                            <div class="notification-actions">
+                                <button class="notification-btn delete"><i class="far fa-trash-alt"></i> Delete</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Add interactivity to notifications
+        document.querySelectorAll('.notification-btn.mark-read').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const notificationItem = this.closest('.notification-item');
+                notificationItem.style.opacity = '0.7';
+                notificationItem.style.borderLeftColor = '#adb5bd';
+                this.innerHTML = '<i class="fas fa-check-circle"></i> Read';
+                this.style.color = '#6c757d';
+            });
+        });
+        
+        document.querySelectorAll('.notification-btn.delete').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const notificationItem = this.closest('.notification-item');
+                notificationItem.style.transform = 'translateX(100%)';
+                notificationItem.style.opacity = '0';
+                setTimeout(() => {
+                    notificationItem.remove();
+                }, 300);
+            });
+        });
+    </script>
 </body>
 </html>
