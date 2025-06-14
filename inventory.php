@@ -19,20 +19,66 @@ if (isset($_GET['delete'])) {
     }
 }
 
+// Pagination settings - baru
+$per_page = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+$offset = ($page - 1) * $per_page;
+
 // Handle search
+// $search = isset($_GET['search']) ? $_GET['search'] : '';
+// $query = "SELECT kode_produk, kategori, nama_produk, satuan, kadaluwarsa, harga, jumlah_stok FROM produk";
+
+// if (!empty($search)) {
+//     $query .= " WHERE nama_produk LIKE ? OR kode_produk LIKE ? OR kategori LIKE ?";
+//     $stmt = mysqli_prepare($connect, $query);
+//     $searchParam = "%$search%";
+//     mysqli_stmt_bind_param($stmt, "sss", $searchParam, $searchParam, $searchParam);
+//     mysqli_stmt_execute($stmt);
+//     $result = mysqli_stmt_get_result($stmt);
+// } else {
+//     $result = mysqli_query($connect, $query);
+// }
+
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $query = "SELECT kode_produk, kategori, nama_produk, satuan, kadaluwarsa, harga, jumlah_stok FROM produk";
+$count_query = "SELECT COUNT(*) as total FROM produk";
 
 if (!empty($search)) {
     $query .= " WHERE nama_produk LIKE ? OR kode_produk LIKE ? OR kategori LIKE ?";
-    $stmt = mysqli_prepare($connect, $query);
+    $count_query .= " WHERE nama_produk LIKE ? OR kode_produk LIKE ? OR kategori LIKE ?";
+    
     $searchParam = "%$search%";
-    mysqli_stmt_bind_param($stmt, "sss", $searchParam, $searchParam, $searchParam);
+    
+    // Get total count
+    $count_stmt = mysqli_prepare($connect, $count_query);
+    mysqli_stmt_bind_param($count_stmt, "sss", $searchParam, $searchParam, $searchParam);
+    mysqli_stmt_execute($count_stmt);
+    $count_result = mysqli_stmt_get_result($count_stmt);
+    $total_row = mysqli_fetch_assoc($count_result);
+    $total = $total_row['total'];
+    
+    // Get paginated data
+    $query .= " LIMIT ?, ?";
+    $stmt = mysqli_prepare($connect, $query);
+    mysqli_stmt_bind_param($stmt, "sssii", $searchParam, $searchParam, $searchParam, $offset, $per_page);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 } else {
-    $result = mysqli_query($connect, $query);
+    // Get total count
+    $count_result = mysqli_query($connect, $count_query);
+    $total_row = mysqli_fetch_assoc($count_result);
+    $total = $total_row['total'];
+    
+    // Get paginated data
+    $query .= " LIMIT ?, ?";
+    $stmt = mysqli_prepare($connect, $query);
+    mysqli_stmt_bind_param($stmt, "ii", $offset, $per_page);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 }
+
+$total_pages = ceil($total / $per_page);
 ?>
 
 <!DOCTYPE html>
@@ -132,11 +178,29 @@ if (!empty($search)) {
             </div>
         <?php endif; ?>
 
+        <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <?php if (!empty($search)): ?>
+                    <small class="text-muted">Hasil pencarian untuk: "<?= htmlspecialchars($search) ?>"</small>
+                <?php endif; ?>
+            </div>
+        </div> -->
+
+        <!-- Ini baru tambahannya -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <?php if (!empty($search)): ?>
                     <small class="text-muted">Hasil pencarian untuk: "<?= htmlspecialchars($search) ?>"</small>
                 <?php endif; ?>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted">Show:</span>
+                <select class="form-select items-per-page-select" onchange="updatePerPage(this.value)">
+                    <option value="10" <?= $per_page == 10 ? 'selected' : '' ?>>10</option>
+                    <option value="25" <?= $per_page == 25 ? 'selected' : '' ?>>25</option>
+                    <option value="50" <?= $per_page == 50 ? 'selected' : '' ?>>50</option>
+                    <option value="100" <?= $per_page == 100 ? 'selected' : '' ?>>100</option>
+                </select>
             </div>
         </div>
 
@@ -197,11 +261,84 @@ if (!empty($search)) {
                     <?php endif; ?>
                 </tbody>
             </table>
+
+            <!-- Pagination -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3">
+                <div class="pagination-info mb-2 mb-md-0">
+                    Showing <?= $offset + 1 ?> to <?= min($offset + $per_page, $total) ?> of <?= $total ?> entries
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination mb-0">
+                        <?php if ($page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="<?= buildPaginationLink(1, $per_page, $search) ?>" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="<?= buildPaginationLink($page - 1, $per_page, $search) ?>" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                        
+                        <?php 
+                        // Show page numbers
+                        $start_page = max(1, $page - 2);
+                        $end_page = min($total_pages, $page + 2);
+                        
+                        if ($start_page > 1): ?>
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        <?php endif;
+                        
+                        for ($i = $start_page; $i <= $end_page; $i++): ?>
+                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                <a class="page-link" href="<?= buildPaginationLink($i, $per_page, $search) ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor;
+                        
+                        if ($end_page < $total_pages): ?>
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        <?php endif; ?>
+                        
+                        <?php if ($page < $total_pages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="<?= buildPaginationLink($page + 1, $per_page, $search) ?>" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="<?= buildPaginationLink($total_pages, $per_page, $search) ?>" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </main>
 </div>
 
+<?php
+function buildPaginationLink($page, $per_page, $search) {
+    $params = ['page' => $page, 'per_page' => $per_page];
+    if (!empty($search)) {
+        $params['search'] = $search;
+    }
+    return 'inventory.php?' . http_build_query($params);
+}
+?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function updatePerPage(perPage) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('per_page', perPage);
+    url.searchParams.set('page', 1); // Reset to first page when changing items per page
+    window.location.href = url.toString();
+}
 
 <script>
 function confirmDelete(kodeProduk, namaProduk) {

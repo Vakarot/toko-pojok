@@ -1,3 +1,4 @@
+/* ========== Base Styles ========== */
 body {
     font-family: 'Poppins', sans-serif;
     background: #f9fafb;
@@ -10,7 +11,7 @@ body {
     background: #f9fafb;
 }
 
-/* Sidebar */
+/* ========== Sidebar ========== */
 .sidebar {
     width: 240px;
     background: #e6f4ea;
@@ -64,7 +65,7 @@ body {
     font-size: 18px;
 }
 
-/* Main Content */
+/* ========== Main Content ========== */
 .main-content {
     flex: 1;
     padding: 2rem 2.5rem;
@@ -72,7 +73,7 @@ body {
     flex-direction: column;
 }
 
-/* Header */
+/* ========== Header ========== */
 .header-top {
     display: flex;
     justify-content: space-between;
@@ -93,7 +94,7 @@ body {
     font-weight: 400;
 }
 
-/* Search & Profile */
+/* ========== Search & Profile ========== */
 .search-profile {
     display: flex;
     align-items: center;
@@ -166,7 +167,44 @@ body {
     color: white;
 }
 
-/* Table */
+/* ========== Pagination ========== */
+.pagination .page-item.active .page-link {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.pagination .page-link {
+    color: #28a745;
+}
+
+.pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+    background-color: #e6f4ea;
+    color: #218838;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+}
+
+.items-per-page-select {
+    width: 80px;
+    border-color: #ced4da;
+    border-radius: 8px;
+    padding: 0.25rem 0.5rem;
+}
+
+.items-per-page-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+}
+
+.pagination-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* ========== Table ========== */
 .table-container {
     background: #fff;
     padding: 1rem;
@@ -262,7 +300,7 @@ body {
     font-size: 0.75rem;
 }
 
-/* Buttons */
+/* ========== Buttons ========== */
 .btn-outline-success,
 .btn-outline-danger {
     border-radius: 8px;
@@ -283,7 +321,7 @@ body {
     border-color: #dc3545;
 }
 
-/* Responsive */
+/* ========== Responsive ========== */
 @media (max-width: 768px) {
     .wrapper {
         flex-direction: column;
