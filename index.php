@@ -111,19 +111,6 @@ if (!isset($_SESSION['id_pengguna'])) {
 
             <!-- Improved Charts and Products -->
             <section class="content-grid">
-                <!-- <div class="chart-container">
-                    <div class="chart-header">
-                        <h2>Laporan Penjualan</h2>
-                        <select class="chart-filter" id="filterTahun">
-                            <option value="2025" selected>2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
-                        </select>
-                    </div>
-                    <canvas id="penjualanChart"></canvas>
-                </div> -->
-
-
                 <div class="chart-container">
                     <div class="chart-header">
                         <h2>Laporan Penjualan</h2>
@@ -137,6 +124,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                         <canvas id="penjualanChart"></canvas>
                     </div>
                 </div>
+
                 <div class="products-container">
                     <div class="products-header">
                         <h2>Produk Terlaris</h2>
@@ -178,8 +166,8 @@ if (!isset($_SESSION['id_pengguna'])) {
                     <div class="table-header">
                         <h2>Stok Hampir Habis</h2>
                         <select class="table-filter" id="stokFilter">
-                            <option value="asc">Stok Ascending</option>
-                            <option value="desc">Stok Descending</option>
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
                         </select>
                     </div>
                     <table class="table">
@@ -213,6 +201,7 @@ if (!isset($_SESSION['id_pengguna'])) {
                         </tbody>
                     </table>
                 </div>
+
                 <div class="table-container">
                     <div class="table-header">
                         <h2>Kedaluwarsa Dekat</h2>

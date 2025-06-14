@@ -102,12 +102,12 @@ body {
 
 .search-profile input {
     width: 280px;
-    border-radius: 50px;
-    border: 1.5px solid #ced4da;
     padding: 0.5rem 1rem 0.5rem 2.5rem;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    border-radius: 50px;
+    border: 1.5px solid #ced4da;
     background: url('data:image/svg+xml;utf8,<svg fill="%23999" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a8 8 0 015.292 13.708l5 5-1.414 1.414-5-5A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>') no-repeat 10px center / 16px 16px;
+    transition: border-color 0.3s;
 }
 
 .search-profile input:focus {
@@ -141,19 +141,19 @@ body {
 
 .dropdown-menu {
     min-width: 160px;
-    border-radius: 0.75rem;
-    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 0.15);
     padding: 0.5rem 0;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
 .dropdown-item {
-    font-weight: 500;
-    color: #2f4f4f;
-    transition: background-color 0.2s, color 0.2s;
     display: flex;
     align-items: center;
     gap: 0.6rem;
     padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    color: #2f4f4f;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .dropdown-item:hover {
@@ -167,54 +167,89 @@ body {
 }
 
 /* Table */
-.table-responsive {
+.table-container {
     background: #fff;
+    padding: 1rem;
     border-radius: 15px;
-    padding: 1rem 1.5rem;
-    box-shadow: 0 5px 20px rgb(40 167 69 / 0.1);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.1);
 }
 
-table.table {
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+}
+
+.table {
+    min-width: 1200px;
     border-collapse: separate;
-    border-spacing: 0 12px;
+    border-spacing: 0;
+    margin: 0;
 }
 
-thead tr {
-    background: #d4edda;
-    color: #155724;
+.table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table thead tr {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
     font-weight: 600;
-    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
 }
 
-thead th {
-    padding: 12px;
+.table thead th {
+    padding: 1rem;
     text-align: center;
     vertical-align: middle;
+    border: none;
+    position: relative;
 }
 
-tbody tr {
-    background: #f8f9fa;
-    border-radius: 12px;
-    transition: background-color 0.3s, box-shadow 0.3s;
+.table thead th:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.3);
 }
 
-tbody tr:hover {
-    background-color: #e6f4ea;
-    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.2);
+.table tbody tr {
+    background: #fff;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-tbody td {
-    vertical-align: middle;
+.table tbody tr:hover {
+    background: #f8fff9;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.1);
+}
+
+.table tbody td {
+    padding: 1rem;
     text-align: center;
-    padding: 12px;
+    vertical-align: middle;
+    border: none;
+    position: relative;
 }
 
-tbody td:first-child {
-    border-radius: 12px 0 0 12px;
-}
-
-tbody td:last-child {
-    border-radius: 0 12px 12px 0;
+.table tbody td:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.05);
 }
 
 .stok-rendah {
@@ -228,7 +263,8 @@ tbody td:last-child {
 }
 
 /* Buttons */
-.btn-outline-success {
+.btn-outline-success,
+.btn-outline-danger {
     border-radius: 8px;
     font-size: 0.9rem;
     padding: 0.25rem 0.6rem;
@@ -239,13 +275,6 @@ tbody td:last-child {
     background-color: #218838;
     color: white;
     border-color: #218838;
-}
-
-.btn-outline-danger {
-    border-radius: 8px;
-    font-size: 0.9rem;
-    padding: 0.25rem 0.6rem;
-    transition: background-color 0.3s, color 0.3s;
 }
 
 .btn-outline-danger:hover {
@@ -262,10 +291,10 @@ tbody td:last-child {
 
     .sidebar {
         width: 100%;
-        border-radius: 0 0 20px 20px;
         flex-direction: row;
         justify-content: space-around;
         padding: 1rem 0;
+        border-radius: 0 0 20px 20px;
     }
 
     .sidebar .logo {
