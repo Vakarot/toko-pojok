@@ -165,3 +165,131 @@ body {
     background-color: rgb(206, 96, 107);
     color: white;
 }
+
+/* Table */
+.table-container {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.1);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+}
+
+.table {
+    min-width: 1200px;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+}
+
+.table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table thead tr {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+}
+
+.table thead th {
+    padding: 1rem;
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+    position: relative;
+}
+
+.table thead th:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.table tbody tr {
+    background: #fff;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.table tbody tr:hover {
+    background: #f8fff9;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.1);
+}
+
+.table tbody td {
+    padding: 1rem;
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+    position: relative;
+}
+
+.table tbody td:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 1rem 0;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .sidebar .logo {
+        display: none;
+    }
+
+    .sidebar nav ul {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .sidebar nav ul li {
+        margin: 0;
+    }
+
+    .main-content {
+        padding: 1.5rem 1rem;
+    }
+
+    .search-profile input {
+        width: 100%;
+    }
+
+    .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}

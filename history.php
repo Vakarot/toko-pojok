@@ -36,9 +36,6 @@
                 <div class="search-profile">
                     <form method="GET" class="d-flex">
                         <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari produk..." aria-label="Search products" class="form-control me-2" />
-                        <!-- <button type="submit" class="btn btn-outline-success me-2">
-                            <i class="fas fa-search"></i>
-                        </button> -->
                         <?php if (!empty($search)): ?>
                             <a href="inventory.php" class="btn btn-outline-secondary me-2">
                                 <i class="fas fa-times"></i>
@@ -97,6 +94,27 @@
                         <small class="text-muted">Hasil pencarian untuk: "<?= htmlspecialchars($search) ?>"</small>
                     <?php endif; ?>
                 </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Kode Riwayat</th>
+                            <th>ID Pengguna</th>
+                            <th>Action</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                </table>
             </div>
         </main>
     </div>
