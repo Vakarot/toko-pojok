@@ -16,10 +16,10 @@ if (!isset($_POST['payment_method'])) {
 
 // For testing purposes, set a default user ID if not exists
 // Replace this with proper login system
-if (!isset($_SESSION['id_pengguna'])) {
-    // You should implement proper login system
-    // For now, using a default user ID - CHANGE THIS!
-    $_SESSION['id_pengguna'] = 'IC250001'; // Use actual user ID from your pengguna table
+if (!isset($_SESSION['id_pengguna']) || empty($_SESSION['id_pengguna'])) {
+    // User is not logged in, redirect to login page
+    header('Location: login.php');
+    exit;
 }
 
 $payment_method = $_POST['payment_method'];

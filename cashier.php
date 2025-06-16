@@ -2,7 +2,12 @@
 session_start();
 include 'koneksi.php';
 
-$id_pengguna = $_SESSION['id_pengguna'] ?? 'IC250001'; // Default user ID for testing
+if (isset($_SESSION['role']) && $_SESSION['role'] == 'InventoryControl') {
+    echo "<script>alert('Anda tidak memiliki akses ke halaman ini.'); window.location.href='index.php';</script>";
+    exit();
+}
+
+$id_pengguna = $_SESSION['id_pengguna']; // Default user ID for testing
 
 function formatRupiah($angka) {
     return "Rp " . number_format($angka, 0, ',', '.');
@@ -155,16 +160,38 @@ $display_order_id = generateOrderId();
             <div class="logo text-center">
                 <img src="assets/logo.png" alt="Logo TokoPojok" />
             </div>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'Owner') { ?> 
             <nav>
                 <ul>
-                    <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                     <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
                     <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
-                    <li><a href="cashier.php" class="active"><i class="fas fa-cash-register"></i>Cashier</a></li>
+                    <li><a href="cashier.php"><i class="fas fa-cash-register"></i>Cashier</a></li>
                     <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
                 </ul>
             </nav>
+            <?php } else if (isset($_SESSION['role']) && $_SESSION['role'] == 'InventoryControl') { ?> 
+            <nav>
+                <ul>
+                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                    <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
+                    <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
+                    <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
+                    <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
+                </ul>
+            </nav>
+            <?php } else if (isset($_SESSION['role']) && $_SESSION['role'] == 'Cashier') { ?> 
+            <nav>
+                <ul>
+                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                    <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
+                    <li><a href="cashier.php"><i class="fas fa-cash-register"></i>Cashier</a></li>
+                    <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
+                    <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
+                </ul>
+            </nav>
+            <?php } ?>
         </aside>
         
         <!-- Main content -->

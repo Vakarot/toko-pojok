@@ -1,7 +1,12 @@
 <?php
 session_start();
-
+include 'koneksi.php';
 // Jika pengguna belum login, arahkan ke halaman login
+if (isset($_SESSION['role']) && $_SESSION['role'] == 'Cashier') {
+    echo "<script>alert('Anda tidak memiliki akses ke halaman ini.'); window.location.href='index.php';</script>";
+    exit();
+}
+
 if (!isset($_SESSION['id_pengguna'])) {
     echo "<script>alert('Silakan login terlebih dahulu.'); window.location.href='login.php';</script>";
     exit();
@@ -33,16 +38,38 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
             <div class="logo text-center">
                 <img src="assets/logo.png" alt="Logo TokoPojok" />
             </div>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'Owner') { ?> 
             <nav>
                 <ul>
-                    <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                     <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
-                    <li><a href="purchase.php" class="active"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
+                    <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
                     <li><a href="cashier.php"><i class="fas fa-cash-register"></i>Cashier</a></li>
                     <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
                 </ul>
             </nav>
+            <?php } else if (isset($_SESSION['role']) && $_SESSION['role'] == 'InventoryControl') { ?> 
+            <nav>
+                <ul>
+                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                    <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
+                    <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
+                    <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
+                    <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
+                </ul>
+            </nav>
+            <?php } else if (isset($_SESSION['role']) && $_SESSION['role'] == 'Cashier') { ?> 
+            <nav>
+                <ul>
+                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                    <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
+                    <li><a href="cashier.php"><i class="fas fa-cash-register"></i>Cashier</a></li>
+                    <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
+                    <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
+                </ul>
+            </nav>
+            <?php } ?>
         </aside>
         
         <!-- Main Content -->
@@ -94,7 +121,6 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
             </div>
 
             <?php
-                include 'koneksi.php';
                 
                 // Pastikan koneksi berhasil
                 if (!$connect) {
