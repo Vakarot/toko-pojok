@@ -288,6 +288,7 @@ $display_order_id = generateOrderId();
                             </div>
                             <form method="POST" class="inline">
                                 <button type="submit" name="clear_cart" class="text-red-600 hover:text-red-800 focus:outline-none" title="Clear Cart">
+                                <a href="riwayatPenjualan.php">Riwayat</a>
                                     <i class="fas fa-trash text-lg"></i>
                                 </button>
                             </form>
