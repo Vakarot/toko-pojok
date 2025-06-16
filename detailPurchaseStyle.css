@@ -1,0 +1,265 @@
+:root {
+            --primary-color: #28a745;
+            --primary-dark: #218838;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --dark-text: #2f4f4f;
+            --light-text: #6c757d;
+            --success-gradient: linear-gradient(135deg, #28a745, #218838);
+            --warning-gradient: linear-gradient(135deg, #ffc107, #fd7e14);
+            --danger-gradient: linear-gradient(135deg, #dc3545, #c82333);
+            --info-gradient: linear-gradient(135deg, #17a2b8, #138496);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            overflow: hidden;
+        }
+
+        .detail-container {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .card-header {
+            background: var(--success-gradient);
+            color: white;
+            padding: 1.75rem 2rem;
+            border-bottom: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 0;
+            position: relative;
+            font-size: 1.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge-success { background: var(--success-gradient); }
+        .badge-warning { background: var(--warning-gradient); }
+        .badge-danger { background: var(--danger-gradient); }
+        .badge-secondary { background: var(--secondary-color); }
+        .badge-info { background: var(--info-gradient); }
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+            border-radius: 3px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.75rem;
+        }
+
+        .info-table tr td {
+            padding: 1rem 1.25rem;
+            vertical-align: middle;
+            background-color: rgba(248, 249, 250, 0.5);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .info-table tr:hover td {
+            background-color: rgba(233, 236, 239, 0.7);
+            transform: translateX(5px);
+        }
+
+        .info-table tr td:first-child {
+            width: 35%;
+            font-weight: 500;
+            color: var(--dark-text);
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .info-table tr td:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .summary-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            height: 100%;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary-color);
+        }
+
+        .summary-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(40, 167, 69, 0.15);
+        }
+
+        .summary-card .card-body {
+            padding: 1.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .summary-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--light-text);
+            margin-bottom: 0.75rem;
+        }
+
+        .summary-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(40, 167, 69, 0.3), transparent);
+            margin: 2.5rem 0;
+            border: none;
+        }
+
+        .btn-action {
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-print {
+            background: var(--success-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-print:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
+
+        .btn-close {
+            background: white;
+            color: var(--dark-text);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e9ecef;
+        }
+
+        .btn-close:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            color: var(--dark-text);
+        }
+
+        .badge-stock {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: white; padding: 0; }
+            .detail-container { margin: 0; max-width: 100%; }
+            .glass-card { box-shadow: none; border: none; }
+        }
+
+        @media (max-width: 992px) {
+            .detail-container { padding: 0 1rem; }
+            .card-header { padding: 1.5rem; }
+            .card-title { font-size: 1.5rem; }
+            .summary-value { font-size: 1.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            .card-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .section-title { font-size: 1.25rem; }
+            .info-table tr td { padding: 0.75rem; }
+            .btn-action { padding: 0.65rem 1.25rem; }
+        }
+
+        @media (max-width: 576px) {
+            .detail-container { margin: 1.5rem auto; }
+            .card-header { padding: 1.25rem; }
+            .card-title { font-size: 1.35rem; }
+            .section-title { font-size: 1.15rem; }
+            .summary-card .card-body { padding: 1.25rem; }
+        }
