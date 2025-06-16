@@ -31,7 +31,7 @@
             <div class="header-top">
                 <div>
                     <h1 class="header-title">Notifications</h1>
-                    <div class="header-subtitle">Stay updated with recent activities</div>
+                    <div class="header-subtitle">Stay Updated with Recent Activities</div>
                 </div>
                 <div class="search-profile">
                     <form method="GET" class="d-flex">
