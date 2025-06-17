@@ -3,12 +3,14 @@ body {
     font-family: 'Poppins', sans-serif;
     background: #f9fafb;
     margin: 0;
+    overflow-x: hidden;
 }
 
 .wrapper {
     display: flex;
     min-height: 100vh;
     background: #f9fafb;
+    overflow-x: hidden;
 }
 
 /* ========== Sidebar ========== */
@@ -71,6 +73,9 @@ body {
     padding: 2rem 2.5rem;
     display: flex;
     flex-direction: column;
+    width: calc(100% - 240px); /* Subtract sidebar width */
+    max-width: 100%;
+    overflow: hidden;
 }
 
 /* ========== Header ========== */
@@ -206,12 +211,22 @@ body {
 
 /* ========== Table ========== */
 .table-container {
-    background: #fff;
     padding: 1rem;
+    background: #fff;
     border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.1);
     overflow: hidden;
     position: relative;
-    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.1);
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+}
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
 }
 
 .table-header {
@@ -223,10 +238,11 @@ body {
 }
 
 .table {
-    min-width: 1200px;
+    width: 100%;
+    margin: 0;
     border-collapse: separate;
     border-spacing: 0;
-    margin: 0;
+    table-layout: auto;
 }
 
 .table thead {
@@ -322,7 +338,7 @@ body {
 }
 
 /* ========== Responsive ========== */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .wrapper {
         flex-direction: column;
     }

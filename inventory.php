@@ -128,14 +128,6 @@ $total_pages = ceil($total / $per_page);
             <div class="search-profile">
                 <form method="GET" class="d-flex">
                     <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search products" class="form-control me-2" />
-                    <!-- <button type="submit" class="btn btn-outline-success me-2">
-                        <i class="fas fa-search"></i>
-                    </button> -->
-                    <!-- <?php if (!empty($search)): ?>
-                        <a href="inventory.php" class="btn btn-outline-secondary me-2">
-                            <i class="fas fa-times"></i>
-                        </a>
-                    <?php endif; ?> -->
                 </form>
                 <div class="profile-dropdown dropdown">
                     <div
@@ -195,167 +187,167 @@ $total_pages = ceil($total / $per_page);
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Kode</th>
-                        <th>Kategori</th>
-                        <th>Nama Produk</th>
-                        <th>Satuan</th>
-                        <th>Kadaluwarsa</th>
-                        <th>Harga</th>
-                        <th>Jumlah Stok</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (mysqli_num_rows($result) > 0): ?>
-                        <?php while ($data = mysqli_fetch_assoc($result)) : ?>
+        <div class="table-container">
+            <div class="table-scroll">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td><?= htmlspecialchars($data['kode_produk']); ?></td>
-                            <td><?= ucfirst(htmlspecialchars($data['kategori'])); ?></span></td>
-                            <td><?= htmlspecialchars($data['nama_produk']); ?></td>
-                            <td><?= htmlspecialchars($data['satuan']); ?></td>
-                            <td><?= htmlspecialchars($data['kadaluwarsa']); ?></td>
-                            <td><?= formatRupiah($data['harga']); ?></td>
-                            <td class="<?= ($data['jumlah_stok'] <= 5) ? 'stok-rendah' : ''; ?>">
-                                <?= htmlspecialchars($data['jumlah_stok']); ?>
-                                <?php if ($data['jumlah_stok'] <= 5): ?>
-                                    <i class="fas fa-exclamation-triangle text-warning ms-1" title="Stok Rendah"></i>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <a href="inventoryEdit.php?kode=<?= urlencode($data['kode_produk']); ?>" class="btn btn-outline-success btn-sm" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            </td>
+                            <th>Kode</th>
+                            <th>Kategori</th>
+                            <th>Nama Produk</th>
+                            <th>Satuan</th>
+                            <th>Kadaluwarsa</th>
+                            <th>Harga</th>
+                            <th>Jumlah Stok</th>
+                            <th>Aksi</th>
                         </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="8" class="text-center py-4">
-                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">
-                                    <?= !empty($search) ? 'Tidak ada produk yang sesuai dengan pencarian.' : 'Belum ada produk yang ditambahkan.' ?>
-                                </p>
-                                <?php if (empty($search)): ?>
-                                    <a href="inventoryEdit.php" class="btn btn-success">
-                                        <i class="fas fa-plus me-2"></i>Tambah Produk Pertama
+                    </thead>
+                    <tbody>
+                        <?php if (mysqli_num_rows($result) > 0): ?>
+                            <?php while ($data = mysqli_fetch_assoc($result)) : ?>
+                            <tr>
+                                <td><?= htmlspecialchars($data['kode_produk']); ?></td>
+                                <td><?= ucfirst(htmlspecialchars($data['kategori'])); ?></span></td>
+                                <td><?= htmlspecialchars($data['nama_produk']); ?></td>
+                                <td><?= htmlspecialchars($data['satuan']); ?></td>
+                                <td><?= htmlspecialchars($data['kadaluwarsa']); ?></td>
+                                <td><?= formatRupiah($data['harga']); ?></td>
+                                <td class="<?= ($data['jumlah_stok'] <= 5) ? 'stok-rendah' : ''; ?>">
+                                    <?= htmlspecialchars($data['jumlah_stok']); ?>
+                                    <?php if ($data['jumlah_stok'] <= 5): ?>
+                                        <i class="fas fa-exclamation-triangle text-warning ms-1" title="Stok Rendah"></i>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <a href="inventoryEdit.php?kode=<?= urlencode($data['kode_produk']); ?>" class="btn btn-outline-success btn-sm" title="Edit">
+                                        <i class="fas fa-edit"></i>
                                     </a>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-
-            <!-- Pagination -->
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3">
-                <div class="pagination-info mb-2 mb-md-0">
-                    Showing <?= $offset + 1 ?> to <?= min($offset + $per_page, $total) ?> of <?= $total ?> entries
-                </div>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination mb-0">
-                        <?php if ($page > 1): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="<?= buildPaginationLink(1, $per_page, $search) ?>" aria-label="First">
-                                    <span aria-hidden="true">&laquo;&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="<?= buildPaginationLink($page - 1, $per_page, $search) ?>" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">
+                                        <?= !empty($search) ? 'Tidak ada produk yang sesuai dengan pencarian.' : 'Belum ada produk yang ditambahkan.' ?>
+                                    </p>
+                                    <?php if (empty($search)): ?>
+                                        <a href="inventoryEdit.php" class="btn btn-success">
+                                            <i class="fas fa-plus me-2"></i>Tambah Produk Pertama
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
                         <?php endif; ?>
-                        
-                        <?php 
-                        // Show page numbers
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3">
+            <div class="pagination-info mb-2 mb-md-0">
+                Showing <?= $offset + 1 ?> to <?= min($offset + $per_page, $total) ?> of <?= $total ?> entries
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination mb-0">
+                    <?php if ($page > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationLink(1, $per_page, $search) ?>" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationLink($page - 1, $per_page, $search) ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php 
                         $start_page = max(1, $page - 2);
                         $end_page = min($total_pages, $page + 2);
-                        
+
                         if ($start_page > 1): ?>
                             <li class="page-item disabled"><span class="page-link">...</span></li>
-                        <?php endif;
-                        
-                        for ($i = $start_page; $i <= $end_page; $i++): ?>
-                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                <a class="page-link" href="<?= buildPaginationLink($i, $per_page, $search) ?>"><?= $i ?></a>
-                            </li>
-                        <?php endfor;
-                        
-                        if ($end_page < $total_pages): ?>
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                        <?php endif; ?>
-                        
-                        <?php if ($page < $total_pages): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="<?= buildPaginationLink($page + 1, $per_page, $search) ?>" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="<?= buildPaginationLink($total_pages, $per_page, $search) ?>" aria-label="Last">
-                                    <span aria-hidden="true">&raquo;&raquo;</span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </nav>
-            </div>
+                    <?php endif; ?>
+
+                    <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                            <a class="page-link" href="<?= buildPaginationLink($i, $per_page, $search) ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($end_page < $total_pages): ?>
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    <?php endif; ?>
+
+                    <?php if ($page < $total_pages): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationLink($page + 1, $per_page, $search) ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationLink($total_pages, $per_page, $search) ?>" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
     </main>
 </div>
 
 <?php
-function buildPaginationLink($page, $per_page, $search) {
-    $params = ['page' => $page, 'per_page' => $per_page];
-    if (!empty($search)) {
-        $params['search'] = $search;
+    function buildPaginationLink($page, $per_page, $search) {
+        $params = ['page' => $page, 'per_page' => $per_page];
+        if (!empty($search)) {
+            $params['search'] = $search;
+        }
+        return 'inventory.php?' . http_build_query($params);
     }
-    return 'inventory.php?' . http_build_query($params);
-}
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-function updatePerPage(perPage) {
-    const url = new URL(window.location.href);
-    url.searchParams.set('per_page', perPage);
-    url.searchParams.set('page', 1); // Reset to first page when changing items per page
-    window.location.href = url.toString();
-}
+    function updatePerPage(perPage) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('per_page', perPage);
+        url.searchParams.set('page', 1); // Reset to first page when changing items per page
+        window.location.href = url.toString();
+    }
 
-function confirmDelete(kodeProduk, namaProduk) {
-    Swal.fire({
-        title: 'Hapus Produk?',
-        text: `Apakah Anda yakin ingin menghapus produk "${namaProduk}"? Tindakan ini tidak dapat dibatalkan.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = `inventory.php?delete=${encodeURIComponent(kodeProduk)}`;
-        }
-    });
-}
-
-// Show success message if redirected after successful operation
+    function confirmDelete(kodeProduk, namaProduk) {
+        Swal.fire({
+            title: 'Hapus Produk?',
+            text: `Apakah Anda yakin ingin menghapus produk "${namaProduk}"? Tindakan ini tidak dapat dibatalkan.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `inventory.php?delete=${encodeURIComponent(kodeProduk)}`;
+            }
+        });
+    }
 </script>
+
 <?php if (isset($_GET['success'])): ?>
-<script>
-Swal.fire({
-    icon: 'success',
-    title: 'Berhasil!',
-    text: 'Operasi berhasil dilakukan.',
-    confirmButtonColor: '#4CAF50'
-});
-</script>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Operasi berhasil dilakukan.',
+            confirmButtonColor: '#4CAF50'
+        });
+    </script>
 <?php endif; ?>
 </body>
 </html>
