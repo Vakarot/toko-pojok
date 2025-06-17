@@ -383,6 +383,26 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                         });
                     }
                 });
+
+                // Add this to your existing script section
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Adjust table container width on resize
+                    function adjustTableWidth() {
+                        const sidebarWidth = document.querySelector('.sidebar').offsetWidth;
+                        const windowWidth = window.innerWidth;
+                        const tableContainer = document.querySelector('.table-container');
+                        
+                        if (tableContainer) {
+                            tableContainer.style.maxWidth = (windowWidth - sidebarWidth - 100) + 'px';
+                        }
+                    }
+                    
+                    // Initial adjustment
+                    adjustTableWidth();
+                    
+                    // Adjust on window resize
+                    window.addEventListener('resize', adjustTableWidth);
+                });
             </script>
         </main>
     </div>
