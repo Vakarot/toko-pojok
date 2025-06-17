@@ -25,21 +25,6 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 $offset = ($page - 1) * $per_page;
 
-// Handle search
-// $search = isset($_GET['search']) ? $_GET['search'] : '';
-// $query = "SELECT kode_produk, kategori, nama_produk, satuan, kadaluwarsa, harga, jumlah_stok FROM produk";
-
-// if (!empty($search)) {
-//     $query .= " WHERE nama_produk LIKE ? OR kode_produk LIKE ? OR kategori LIKE ?";
-//     $stmt = mysqli_prepare($connect, $query);
-//     $searchParam = "%$search%";
-//     mysqli_stmt_bind_param($stmt, "sss", $searchParam, $searchParam, $searchParam);
-//     mysqli_stmt_execute($stmt);
-//     $result = mysqli_stmt_get_result($stmt);
-// } else {
-//     $result = mysqli_query($connect, $query);
-// }
-
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $query = "SELECT kode_produk, kategori, nama_produk, satuan, kadaluwarsa, harga, jumlah_stok FROM produk";
 $count_query = "SELECT COUNT(*) as total FROM produk";
@@ -142,7 +127,7 @@ $total_pages = ceil($total / $per_page);
             </div>
             <div class="search-profile">
                 <form method="GET" class="d-flex">
-                    <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari produk..." aria-label="Search products" class="form-control me-2" />
+                    <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search products" class="form-control me-2" />
                     <!-- <button type="submit" class="btn btn-outline-success me-2">
                         <i class="fas fa-search"></i>
                     </button> -->
@@ -169,12 +154,6 @@ $total_pages = ceil($total / $per_page);
                         aria-labelledby="profileDropdown"
                     >
                         <li>
-                            <a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                                <i class="fas fa-id-card text-success"></i> Profil
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li>
                             <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </a>
@@ -197,14 +176,6 @@ $total_pages = ceil($total / $per_page);
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         <?php endif; ?>
-
-        <!-- <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <?php if (!empty($search)): ?>
-                    <small class="text-muted">Hasil pencarian untuk: "<?= htmlspecialchars($search) ?>"</small>
-                <?php endif; ?>
-            </div>
-        </div> -->
 
         <!-- Ini baru tambahannya -->
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -258,9 +229,6 @@ $total_pages = ceil($total / $per_page);
                                 <a href="inventoryEdit.php?kode=<?= urlencode($data['kode_produk']); ?>" class="btn btn-outline-success btn-sm" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <button onclick="confirmDelete('<?= htmlspecialchars($data['kode_produk']); ?>', '<?= htmlspecialchars($data['nama_produk']); ?>')" class="btn btn-outline-danger btn-sm" title="Delete">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
                             </td>
                         </tr>
                         <?php endwhile; ?>

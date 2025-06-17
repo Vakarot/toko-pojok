@@ -238,15 +238,15 @@ while ($row = mysqli_fetch_assoc($activity_types_result)) {
                 </div>
                 <div class="search-profile">
                     <form method="GET" class="d-flex">
-                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari aktivitas..." aria-label="Search activities" class="form-control me-2" />
+                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search activities" class="form-control me-2" />
                         <?php if (!empty($search)): ?>
                             <a href="history.php" class="btn btn-outline-secondary me-2">
                                 <i class="fas fa-times"></i>
                             </a>
                         <?php endif; ?>
-                        <button type="submit" class="btn btn-primary me-2">
+                        <!-- <button type="submit" class="btn btn-primary me-2">
                             <i class="fas fa-search"></i>
-                        </button>
+                        </button> -->
                     </form>
                     <div class="profile-dropdown dropdown">
                         <div
@@ -264,12 +264,12 @@ while ($row = mysqli_fetch_assoc($activity_types_result)) {
                             class="dropdown-menu dropdown-menu-end mt-2 rounded-3"
                             aria-labelledby="profileDropdown"
                         >
-                            <li>
+                            <!-- <li>
                                 <a class="dropdown-item d-flex align-items-center gap-2" href="#">
                                     <i class="fas fa-id-card text-success"></i> Profil
                                 </a>
                             </li>
-                            <li><hr class="dropdown-divider" /></li>
+                            <li><hr class="dropdown-divider" /></li> -->
                             <li>
                                 <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
                                     <i class="fas fa-sign-out-alt"></i> Logout

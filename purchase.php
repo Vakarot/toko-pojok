@@ -79,7 +79,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                 </div>
                 <div class="search-profile">
                     <form method="GET" class="d-flex">
-                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari produk..." aria-label="Search products" class="form-control me-2" />
+                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search products" class="form-control me-2" />
                         <?php if (!empty($search)): ?>
                             <a href="purchase.php" class="btn btn-outline-secondary me-2">
                                 <i class="fas fa-times"></i>
@@ -102,12 +102,6 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                             class="dropdown-menu dropdown-menu-end mt-2 rounded-3"
                             aria-labelledby="profileDropdown"
                         >
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                                    <i class="fas fa-id-card text-success"></i> Profil
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider" /></li>
                             <li>
                                 <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
                                     <i class="fas fa-sign-out-alt"></i> Logout

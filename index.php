@@ -169,7 +169,6 @@ $monthlyDataJson = json_encode($monthlyData);
                     <div class="header-subtitle">Selamat Datang</div>
                 </div>
                 <div class="search-profile">
-                    <input type="search" placeholder="Cari produk..." aria-label="Search products" />
                     <div class="profile-dropdown dropdown">
                         <div
                             class="profile-icon rounded-circle shadow-sm"
@@ -186,12 +185,6 @@ $monthlyDataJson = json_encode($monthlyData);
                             class="dropdown-menu dropdown-menu-end mt-2 rounded-3"
                             aria-labelledby="profileDropdown"
                         >
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                                    <i class="fas fa-id-card text-success"></i> Profil
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider" /></li>
                             <li>
                                 <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
                                     <i class="fas fa-sign-out-alt"></i> Logout
