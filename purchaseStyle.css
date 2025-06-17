@@ -317,20 +317,67 @@ body {
 }
 
 /* ACTION BUTTONS */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    min-width: 180px; /* Lebar minimum untuk kolom aksi */
+}
+
 .btn-action {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin: 0 2px;
     border-radius: 8px;
     transition: all 0.2s;
+    padding: 0;
+    margin: 0;
+    border: 1px solid transparent;
 }
 
 .btn-action:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific button colors */
+.btn-action.btn-outline-info {
+    color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.btn-action.btn-outline-info:hover {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.btn-action.btn-outline-success {
+    color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-action.btn-outline-success:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-action.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-action.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Button icons */
+.btn-action i {
+    font-size: 14px;
 }
 
 /* SCROLLBAR STYLING */

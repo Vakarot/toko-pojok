@@ -239,22 +239,24 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                                             </span>
                                         </td>
                                         <td>
-                                            <button class="btn btn-outline-info btn-action" 
-                                                    onclick="lihatDetail('<?= $row['id_pemesanan'] ?>')"
-                                                    title="Lihat Detail">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-success btn-action btn-edit" 
-                                                    onclick="editPemesanan('<?= $row['id_pemesanan'] ?>')"
-                                                    <?= $row['stat'] === 'Tersimpan' ? 'style="display:none"' : '' ?>
-                                                    title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-action" 
-                                                    onclick="hapusPemesanan('<?= $row['id_pemesanan'] ?>')"
-                                                    title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-outline-info btn-action" 
+                                                        onclick="lihatDetail('<?= $row['id_pemesanan'] ?>')"
+                                                        title="Lihat Detail">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-outline-success btn-action btn-edit" 
+                                                        onclick="editPemesanan('<?= $row['id_pemesanan'] ?>')"
+                                                        <?= $row['stat'] === 'Tersimpan' ? 'style="display:none"' : '' ?>
+                                                        title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger btn-action" 
+                                                        onclick="hapusPemesanan('<?= $row['id_pemesanan'] ?>')"
+                                                        title="Hapus">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
