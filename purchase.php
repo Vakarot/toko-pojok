@@ -1,19 +1,86 @@
 <?php
-session_start();
-include 'koneksi.php';
-// Jika pengguna belum login, arahkan ke halaman login
-if (isset($_SESSION['role']) && $_SESSION['role'] == 'Cashier') {
-    echo "<script>alert('Anda tidak memiliki akses ke halaman ini.'); window.location.href='index.php';</script>";
-    exit();
-}
+    session_start();
+    include 'koneksi.php';
+    // Jika pengguna belum login, arahkan ke halaman login
+    if (isset($_SESSION['role']) && $_SESSION['role'] == 'Cashier') {
+        echo "<script>alert('Anda tidak memiliki akses ke halaman ini.'); window.location.href='index.php';</script>";
+        exit();
+    }
 
-if (!isset($_SESSION['id_pengguna'])) {
-    echo "<script>alert('Silakan login terlebih dahulu.'); window.location.href='login.php';</script>";
-    exit();
-}
+    if (!isset($_SESSION['id_pengguna'])) {
+        echo "<script>alert('Silakan login terlebih dahulu.'); window.location.href='login.php';</script>";
+        exit();
+    }
 
-// Inisialisasi variabel search
-$search = isset($_GET['search']) ? $_GET['search'] : '';
+    // Inisialisasi variabel search
+    // $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+    // Inisialisasi variabel
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+    $per_page = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) $page = 1;
+    if ($per_page < 1) $per_page = 10;
+
+    // Hitung total data
+    $query_count = "SELECT COUNT(*) as total FROM pemesanan p
+                LEFT JOIN produk pr ON p.kode_produk = pr.kode_produk";
+                
+    if (!empty($search)) {
+        $search_escaped = mysqli_real_escape_string($connect, $search);
+        $query_count .= " WHERE (pr.nama_produk LIKE '%$search_escaped%' 
+                        OR p.kode_produk LIKE '%$search_escaped%' 
+                        OR p.vendor LIKE '%$search_escaped%')";
+    }
+
+    $result_count = mysqli_query($connect, $query_count);
+    $total_data = mysqli_fetch_assoc($result_count)['total'];
+    $total_pages = ceil($total_data / $per_page);
+    if ($page > $total_pages && $total_pages > 0) $page = $total_pages;
+    $offset = ($page - 1) * $per_page;
+
+    // Query data dengan pagination
+    $query = "SELECT 
+                p.id_pemesanan,
+                p.stat,
+                p.kode_produk,
+                p.tanggal_pesan,
+                p.tanggal_datang,
+                p.vendor,
+                p.jumlah_pesan,
+                p.jumlah_diterima,
+                pr.nama_produk,
+                pr.kategori,
+                pr.satuan,
+                pr.harga,
+                pr.jumlah_stok,
+                u.nama
+            FROM pemesanan p
+            LEFT JOIN produk pr ON p.kode_produk = pr.kode_produk
+            LEFT JOIN pengguna u ON p.id_pengguna = u.id_pengguna";
+
+    if (!empty($search)) {
+        $query .= " WHERE (pr.nama_produk LIKE '%$search_escaped%' 
+                    OR p.kode_produk LIKE '%$search_escaped%' 
+                    OR p.vendor LIKE '%$search_escaped%')";
+    }
+
+    $query .= " ORDER BY p.stat DESC, p.tanggal_pesan DESC
+                LIMIT $offset, $per_page";
+
+    $result = mysqli_query($connect, $query);
+
+    if (!$result) {
+        die("Query error: " . mysqli_error($connect));
+    }
+
+    function buildPaginationLink($page, $per_page, $search) {
+        $params = ['page' => $page, 'per_page' => $per_page];
+        if (!empty($search)) {
+            $params['search'] = $search;
+        }
+        return 'purchase.php?' . http_build_query($params);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -79,13 +146,11 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                 </div>
                 <div class="search-profile">
                     <form method="GET" class="d-flex">
+                        <input type="hidden" name="page" value="1">
+                        <input type="hidden" name="per_page" value="<?= $per_page ?>">
                         <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search products" class="form-control me-2" />
-                        <?php if (!empty($search)): ?>
-                            <a href="purchase.php" class="btn btn-outline-secondary me-2">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        <?php endif; ?>
                     </form>
+
                     <div class="profile-dropdown dropdown">
                         <div
                             class="profile-icon rounded-circle shadow-sm"
@@ -113,7 +178,6 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
             </div>
 
             <?php
-                
                 // Pastikan koneksi berhasil
                 if (!$connect) {
                     die("Koneksi database gagal: " . mysqli_connect_error());
@@ -160,6 +224,16 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                 <button class="btn btn-success" onclick="window.location.href='addProduct.php'">
                     <i class="fas fa-plus me-2"></i>Tambah Pemesanan
                 </button>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted">Show:</span>
+                    <select class="form-select items-per-page-select" onchange="updatePerPage(this.value)">
+                        <option value="10" <?= $per_page == 10 ? 'selected' : '' ?>>10</option>
+                        <option value="25" <?= $per_page == 25 ? 'selected' : '' ?>>25</option>
+                        <option value="50" <?= $per_page == 50 ? 'selected' : '' ?>>50</option>
+                        <option value="100" <?= $per_page == 100 ? 'selected' : '' ?>>100</option>
+                    </select>
+                </div>
             </div>
 
             <div class="table-container">
@@ -260,34 +334,102 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="14">
-                                        <div class="empty-state">
-                                            <div class="empty-state-icon">
-                                                <i class="fas fa-inbox"></i>
+
+                                <?php if (mysqli_num_rows($result) == 0): ?>
+                                    <tr>
+                                        <td colspan="14">
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon">
+                                                    <i class="fas fa-inbox"></i>
+                                                </div>
+                                                <h5 class="mb-2">
+                                                    <?= !empty($search) ? 'Tidak ada hasil pencarian untuk "' . htmlspecialchars($search) . '"' : 'Belum ada data purchase order' ?>
+                                                </h5>
+                                                <p class="text-muted mb-3">
+                                                    <?= !empty($search) ? 'Coba kata kunci lain' : 'Mulai dengan menambahkan purchase order pertama Anda' ?>
+                                                </p>
+                                                <?php if (empty($search)): ?>
+                                                    <a href="addPurchase.php" class="btn btn-primary">
+                                                        <i class="fas fa-plus me-2"></i>Tambah PO
+                                                    </a>
+                                                <?php else: ?>
+                                                    <a href="purchase.php" class="btn btn-primary">
+                                                        <i class="fas fa-undo me-2"></i>Reset Pencarian
+                                                    </a>
+                                                <?php endif; ?>
                                             </div>
-                                            <h5 class="mb-2">
-                                                <?= !empty($search) ? 'Tidak ada hasil pencarian' : 'Belum ada data purchase order' ?>
-                                            </h5>
-                                            <p class="text-muted mb-3">
-                                                <?= !empty($search) ? 'Coba kata kunci lain' : 'Mulai dengan menambahkan purchase order pertama Anda' ?>
-                                            </p>
-                                            <?php if (empty($search)): ?>
-                                                <a href="addPurchase.php" class="btn btn-primary">
-                                                    <i class="fas fa-plus me-2"></i>Tambah PO
-                                                </a>
-                                            <?php endif; ?>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
 
+            <!-- Pagination -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3">
+                        <div class="pagination-info mb-2 mb-md-0">
+                            Showing <?= $offset + 1 ?> to <?= min($offset + $per_page, $total_data) ?> of <?= $total_data ?> entries
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination mb-0">
+                                <?php if ($page > 1): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="<?= buildPaginationLink(1, $per_page, $search) ?>" aria-label="First">
+                                            <span aria-hidden="true">&laquo;&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="<?= buildPaginationLink($page - 1, $per_page, $search) ?>" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                                
+                                <?php 
+                                // Show page numbers
+                                $start_page = max(1, $page - 2);
+                                $end_page = min($total_pages, $page + 2);
+                                
+                                if ($start_page > 1): ?>
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                <?php endif;
+                                
+                                for ($i = $start_page; $i <= $end_page; $i++): ?>
+                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                        <a class="page-link" href="<?= buildPaginationLink($i, $per_page, $search) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor;
+                                
+                                if ($end_page < $total_pages): ?>
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                <?php endif; ?>
+                                
+                                <?php if ($page < $total_pages): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="<?= buildPaginationLink($page + 1, $per_page, $search) ?>" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="<?= buildPaginationLink($total_pages, $per_page, $search) ?>" aria-label="Last">
+                                            <span aria-hidden="true">&raquo;&raquo;</span>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+
             <script>
+                function updatePerPage(perPage) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('per_page', perPage);
+                    url.searchParams.set('page', 1); // Reset to first page when changing items per page
+                    window.location.href = url.toString();
+                }
+
                 function simpanRow(rowId) {
                     if (!confirm('Apakah Anda yakin ingin menyimpan data ini ke inventory? Setelah disimpan, data tidak dapat diubah.')) {
                         return;
