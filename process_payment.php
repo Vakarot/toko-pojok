@@ -27,9 +27,11 @@ $payment_method = $_POST['payment_method'];
 // Calculate totals
 $total_items = 0;
 $total_harga = 0;
-foreach ($_SESSION['cart'] as $item) {
+$cart_summary = []; // To store product details for history
+foreach ($_SESSION['cart'] as $kode_produk => $item) {
     $total_items += $item['quantity'];
     $total_harga += $item['harga'] * $item['quantity'];
+    $cart_summary[] = $item['nama_produk'] . ' (x' . $item['quantity'] . ')';
 }
 
 // Generate unique order ID
@@ -114,6 +116,19 @@ try {
         if (mysqli_stmt_affected_rows($stmt_update_stock) == 0) {
             throw new Exception("Failed to update stock for product: " . $kode_produk);
         }
+    }
+    
+    // Record transaction in history (riwayat) table
+    $products_list = implode(', ', $cart_summary);
+    $action_description = "Transaksi penjualan " . $order_id . " - " . $products_list . " | Total: Rp " . number_format($total_harga, 0, ',', '.') . " | Metode: " . ucfirst($payment_method);
+    
+    $stmt_riwayat = mysqli_prepare($connect,
+        "INSERT INTO riwayat (id_pengguna, action, timestamp) VALUES (?, ?, NOW())"
+    );
+    mysqli_stmt_bind_param($stmt_riwayat, "ss", $id_pengguna, $action_description);
+    
+    if (!mysqli_stmt_execute($stmt_riwayat)) {
+        throw new Exception("Error inserting riwayat: " . mysqli_stmt_error($stmt_riwayat));
     }
     
     // Commit transaction

@@ -1,5 +1,5 @@
 <?php
-// input_purchase.php - Form untuk input pemesanan baru dengan sistem riwayat
+// addProduct.php 
 
 session_start();
 include 'koneksi.php';

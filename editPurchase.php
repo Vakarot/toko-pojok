@@ -3,6 +3,14 @@
 session_start();
 include 'koneksi.php';
 
+// Cek apakah user sudah login
+if (!isset($_SESSION['id_pengguna'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$id_pengguna = $_SESSION['id_pengguna']; // Ambil ID pengguna dari session
+
 if (!isset($_GET['id'])) {
     header('Location: purchase.php');
     exit;
@@ -31,6 +39,13 @@ if ($purchase['stat'] === 'Tersimpan') {
     exit;
 }
 
+function addToHistory($connect, $id_pengguna, $action) {
+    $query = "INSERT INTO riwayat (id_pengguna, action, timestamp) VALUES (?, ?, NOW())";
+    $stmt = mysqli_prepare($connect, $query);
+    mysqli_stmt_bind_param($stmt, "ss", $id_pengguna, $action);
+    return mysqli_stmt_execute($stmt);
+}
+
 // Process form update
 if ($_POST) {
     try {
@@ -40,12 +55,27 @@ if ($_POST) {
         $jumlah_pesan = $_POST['jumlah_pesan'];
         $jumlah_diterima = $_POST['jumlah_diterima'];
         
+        // Ambil data produk untuk history
+        $kode_produk = $purchase['kode_produk'];
+        $nama_produk = $purchase['nama_produk'];
+        
         $queryUpdate = "UPDATE pemesanan SET tanggal_pesan=?, tanggal_datang=?, vendor=?, jumlah_pesan=?, jumlah_diterima=? WHERE id_pemesanan=?";
         $stmtUpdate = mysqli_prepare($connect, $queryUpdate);
-        mysqli_stmt_bind_param($stmtUpdate, "sssiid", $tanggal_pesan, $tanggal_datang, $vendor, $jumlah_pesan, $jumlah_diterima, $id);
-        mysqli_stmt_execute($stmtUpdate);
+        mysqli_stmt_bind_param($stmtUpdate, "sssiii", $tanggal_pesan, $tanggal_datang, $vendor, $jumlah_pesan, $jumlah_diterima, $id);
         
-        echo "<script>alert('Data berhasil diupdate'); window.location.href='purchase.php';</script>";
+        if (mysqli_stmt_execute($stmtUpdate)) {
+            // Buat action string dengan data yang benar
+            $actionEdit = "Mengupdate pemesanan: $kode_produk - $nama_produk dari vendor $vendor (Jumlah: $jumlah_pesan, Tanggal pesan: $tanggal_pesan, Tanggal datang: $tanggal_datang)";
+            
+            // Tambahkan ke history
+            if (addToHistory($connect, $id_pengguna, $actionEdit)) {
+                echo "<script>alert('Data berhasil diupdate'); window.location.href='purchase.php';</script>";
+            } else {
+                echo "<script>alert('Data berhasil diupdate, namun gagal menyimpan ke riwayat');</script>";
+            }
+        } else {
+            throw new Exception("Gagal mengupdate data pemesanan");
+        }
         
     } catch (Exception $e) {
         $error = "Error: " . $e->getMessage();

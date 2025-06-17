@@ -12,8 +12,8 @@ if (!isset($_SESSION['id_pengguna'])) {
 
 // Cek role - hanya Owner dan Inventory Control yang bisa lihat riwayat lengkap
 $user_role = $_SESSION['role'] ?? '';
-if (!in_array($user_role, ['Owner', 'Inventory Control'])) {
-    echo "<script>alert('Anda tidak memiliki akses ke halaman ini.'); window.location.href='dashboard.php';</script>";
+if (!in_array($user_role, ['Owner'])) {
+    echo "<script>alert('Anda tidak memiliki akses ke halaman ini.'); window.location.href='index.php';</script>";
     exit();
 }
 
@@ -215,7 +215,6 @@ while ($row = mysqli_fetch_assoc($activity_types_result)) {
                     <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                     <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
                     <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
-                    <li><a href="history.php" class="active"><i class="fas fa-history"></i>History</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
                 </ul>
             </nav>
@@ -225,7 +224,6 @@ while ($row = mysqli_fetch_assoc($activity_types_result)) {
                     <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                     <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
                     <li><a href="cashier.php"><i class="fas fa-cash-register"></i>Cashier</a></li>
-                    <li><a href="history.php" class="active"><i class="fas fa-history"></i>History</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
                 </ul>
             </nav>
@@ -279,69 +277,6 @@ while ($row = mysqli_fetch_assoc($activity_types_result)) {
                             </li>
                         </ul>
                     </div>
-                </div>
-            </div>
-
-            <!-- Activity Types Chart -->
-            <?php if (!empty($activity_types)): ?>
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Aktivitas 7 Hari Terakhir</h5>
-                        </div>
-                        <div class="card-body">
-                            <?php foreach ($activity_types as $type): ?>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span><?= htmlspecialchars($type['activity_type']) ?></span>
-                                    <span class="badge bg-primary"><?= $type['count'] ?></span>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <!-- Filters -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Filter Riwayat</h5>
-                </div>
-                <div class="card-body">
-                    <form method="GET" class="row g-3">
-                        <div class="col-md-3">
-                            <label for="filter_user" class="form-label">Pengguna</label>
-                            <select name="filter_user" id="filter_user" class="form-select">
-                                <option value="">Semua Pengguna</option>
-                                <?php foreach ($users as $user): ?>
-                                    <option value="<?= htmlspecialchars($user['id_pengguna']) ?>" 
-                                            <?= $filter_user == $user['id_pengguna'] ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($user['nama']) ?> (<?= htmlspecialchars($user['role']) ?>)
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="date_from" class="form-label">Dari Tanggal</label>
-                            <input type="date" name="date_from" id="date_from" class="form-control" value="<?= htmlspecialchars($date_from) ?>">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="date_to" class="form-label">Sampai Tanggal</label>
-                            <input type="date" name="date_to" id="date_to" class="form-control" value="<?= htmlspecialchars($date_to) ?>">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">&nbsp;</label>
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-filter"></i> Filter
-                                </button>
-                                <a href="history.php" class="btn btn-secondary">
-                                    <i class="fas fa-refresh"></i> Reset
-                                </a>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
 

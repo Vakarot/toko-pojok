@@ -27,12 +27,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = ''; // Ganti dengan email kamu
-            $mail->Password = ''; // Gunakan App Password Gmail
+            $mail->Username = 'your_email@gmail.com'; // Ganti dengan email kamu
+            $mail->Password = 'your_app_password'; // Gunakan App Password Gmail
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
-            $mail->setFrom('luthfank345@gmail.com', 'Toko Pojok');
+            $mail->setFrom('your_email@gmail.com', 'Toko Pojok');
             $mail->addAddress($email);
 
             $mail->isHTML(true);
