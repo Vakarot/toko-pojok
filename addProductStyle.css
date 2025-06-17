@@ -1,0 +1,308 @@
+:root {
+    --primary: #28a745;
+    --primary-dark: #218838;
+    --primary-light: #e6f4ea;
+    --secondary: #6c757d;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --light-gray: #e9ecef;
+    --border: #dee2e6;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --radius: 0.5rem;
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --transition: all 0.2s ease-in-out;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f7fa;
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+.page-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.card {
+    border: none;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Efek overlay saat hover */
+.card-header:hover {
+    box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+}
+
+/* Tambahkan efek pseudo-element untuk animasi */
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.card-header:hover::before {
+    left: 100%;
+}
+
+/* Efek teks yang sedikit naik saat hover */
+.card-header > div {
+    transition: transform 0.3s ease;
+    transform: translateY(0);
+}
+
+.card-header:hover > div {
+    transform: translateY(-3px);
+}
+
+.card-title {
+    font-weight: 600;
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.card-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.section {
+    background-color: white;
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-title i {
+    font-size: 1.1em;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-control, .form-select, .select2-selection {
+    border-radius: var(--radius) !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid var(--border) !important;
+    transition: var(--transition) !important;
+    font-size: 0.95rem;
+    height: calc(2.75rem + 2px);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15) !important;
+}
+
+.input-group-text {
+    background-color: var(--light-gray);
+    font-size: 0.95rem;
+}
+
+.btn {
+    border-radius: var(--radius);
+    padding: 0.75rem 1.75rem;
+    font-weight: 500;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-outline-secondary {
+    border-color: var(--border);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--light-gray);
+}
+
+.product-info {
+    background-color: var(--primary-light);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 50rem;
+}
+
+.badge-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: var(--success);
+}
+
+.badge-info {
+    background-color: rgba(23, 162, 184, 0.1);
+    color: var(--info);
+}
+
+.radio-card {
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: var(--transition);
+    height: 100%;
+}
+
+.radio-card:hover {
+    border-color: var(--primary);
+    background-color: rgba(40, 167, 69, 0.03);
+}
+
+.radio-card.active {
+    border-color: var(--primary);
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+.radio-card .form-check-input {
+    margin-top: 0.3rem;
+}
+
+.radio-card h6 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.radio-card p {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 0;
+}
+
+.alert {
+    border-radius: var(--radius);
+}
+
+/* Select2 customization */
+.select2-container--default .select2-selection--single {
+    height: auto !important;
+    min-height: calc(2.75rem + 2px);
+    display: flex;
+    align-items: center;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+}
+
+/* Flatpickr customization */
+.flatpickr-input {
+    background-color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .page-container {
+        padding: 0 1rem;
+    }
+    
+    .card-header {
+        padding: 1.25rem;
+    }
+    
+    .section {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.15rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-container {
+        margin: 1rem auto;
+        padding: 0 0.75rem;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1.35rem;
+    }
+    
+    .section {
+        padding: 1.25rem;
+    }
+    
+    .button-group {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}

@@ -178,190 +178,212 @@ $existingProducts = getExistingProducts($connect);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Purchase Order</title>
+    <title>Input Purchase Order | Agricultural System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        .history-info {
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-            border-left: 4px solid #2196f3;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-        .history-info h6 {
-            color: #1976d2;
-            margin-bottom: 10px;
-        }
-        .history-info ul {
-            margin-bottom: 0;
-            padding-left: 20px;
-        }
-        .history-info li {
-            margin-bottom: 5px;
-            color: #424242;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="addProductStyle.css">
 </head>
 <body>
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Input Purchase Order</h4>
-                    <!-- DEBUG INFO - HAPUS SETELAH TESTING -->
-                    <small class="text-muted">
-                        User ID: <?= isset($_SESSION['id_pengguna']) ? $_SESSION['id_pengguna'] : 'TIDAK ADA' ?>
-                    </small>
-                </div>
-                <div class="card-body">
-                    <form id="purchaseForm" method="POST">
-                        
-                        <!-- Toggle Produk Baru/Existing -->
-                        <div class="mb-3">
-                            <label class="form-label">Jenis Input Produk</label>
-                            <div>
-                                <div class="form-check form-check-inline">
+<div class="page-container">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h1 class="card-title">Input Purchase Order</h1>
+                <p class="card-subtitle">
+                    <i class="fas fa-calendar-alt me-2"></i> 
+                    <?= date('d F Y') ?>
+                </p>
+            </div>
+        </div>
+        
+        <div class="card-body p-4">
+            <form id="purchaseForm" method="POST">
+                <!-- Product Type Selection -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <i class="fas fa-boxes"></i>Jenis Produk
+                    </h2>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="radio-card" onclick="document.getElementById('existing_product').click()">
+                                <div class="form-check">
                                     <input class="form-check-input" type="radio" name="is_new_product" id="existing_product" value="0" checked>
                                     <label class="form-check-label" for="existing_product">
-                                        Pilih Produk Existing
+                                        <h6 class="mb-1">Pilih Produk Existing</h6>
+                                        <p class="small mb-0">Pilih dari daftar produk yang sudah ada di sistem</p>
                                     </label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="radio-card" onclick="document.getElementById('new_product').click()">
+                                <div class="form-check">
                                     <input class="form-check-input" type="radio" name="is_new_product" id="new_product" value="1">
                                     <label class="form-check-label" for="new_product">
-                                        Tambah Produk Baru
+                                        <h6 class="mb-1">Tambah Produk Baru</h6>
+                                        <p class="small mb-0">Tambahkan produk baru ke dalam sistem</p>
                                     </label>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Section untuk Produk Existing -->
-                        <div id="existing_product_section">
+                <!-- Existing Product Section -->
+                <div id="existing_product_section" class="section">
+                    <h2 class="section-title">
+                        <i class="fas fa-search"></i>Pilih Produk
+                    </h2>
+                    
+                    <div class="mb-4">
+                        <label for="kode_produk_existing" class="form-label">Cari Produk</label>
+                        <select class="form-select" id="kode_produk_existing" name="kode_produk_existing" style="width: 100%">
+                            <option value="">-- Pilih Produk --</option>
+                            <?php foreach ($existingProducts as $product): ?>
+                            <option value="<?= $product['kode_produk'] ?>" 
+                                    data-nama="<?= $product['nama_produk'] ?>"
+                                    data-kategori="<?= $product['kategori'] ?>"
+                                    data-satuan="<?= $product['satuan'] ?>"
+                                    data-harga="<?= $product['harga'] ?>">
+                                <?= $product['kode_produk'] ?> - <?= $product['nama_produk'] ?> (<?= $product['kategori'] ?>)
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <!-- Product Info -->
+                    <div id="product_info" class="product-info" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0 fw-semibold">Informasi Produk</h6>
+                            <span class="badge badge-success" id="product_code_badge"></span>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Nama:</strong> <span id="info_nama"></span></p>
+                                <p class="mb-0"><strong>Kategori:</strong> <span class="badge badge-info" id="info_kategori"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Satuan:</strong> <span id="info_satuan"></span></p>
+                                <p class="mb-0"><strong>Harga:</strong> Rp <span id="info_harga"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Product Section -->
+                <div id="new_product_section" class="section" style="display: none;">
+                    <h2 class="section-title">
+                        <i class="fas fa-plus-circle"></i>Detail Produk Baru
+                    </h2>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="kode_produk_existing" class="form-label">Pilih Produk</label>
-                                <select class="form-select" id="kode_produk_existing" name="kode_produk_existing">
-                                    <option value="">-- Pilih Produk --</option>
-                                    <?php foreach ($existingProducts as $product): ?>
-                                    <option value="<?= $product['kode_produk'] ?>" 
-                                            data-nama="<?= $product['nama_produk'] ?>"
-                                            data-kategori="<?= $product['kategori'] ?>"
-                                            data-satuan="<?= $product['satuan'] ?>"
-                                            data-harga="<?= $product['harga'] ?>">
-                                        <?= $product['kode_produk'] ?> - <?= $product['nama_produk'] ?> (<?= $product['kategori'] ?>)
-                                    </option>
-                                    <?php endforeach; ?>
+                                <label for="kategori" class="form-label">Kategori</label>
+                                <select class="form-select" id="kategori" name="kategori" required>
+                                    <option value="">-- Pilih Kategori --</option>
+                                    <option value="pestisida">Pestisida</option>
+                                    <option value="pupuk">Pupuk</option>
+                                    <option value="perlengkapan">Perlengkapan</option>
+                                    <option value="bibit">Bibit</option>
+                                    <option value="benih">Benih</option>
                                 </select>
                             </div>
-                            
-                            <!-- Info produk yang dipilih -->
-                            <div id="product_info" class="alert alert-info" style="display: none;">
-                                <h6>Informasi Produk:</h6>
-                                <p id="info_display"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="nama_produk" class="form-label">Nama Produk</label>
+                                <input type="text" class="form-control" id="nama_produk" name="nama_produk" placeholder="Masukkan nama produk" required>
                             </div>
                         </div>
-
-                        <!-- Section untuk Produk Baru -->
-                        <div id="new_product_section" style="display: none;">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="kategori" class="form-label">Kategori</label>
-                                        <select class="form-select" id="kategori" name="kategori">
-                                            <option value="">-- Pilih Kategori --</option>
-                                            <option value="pestisida">Pestisida</option>
-                                            <option value="pupuk">Pupuk</option>
-                                            <option value="perlengkapan">Perlengkapan</option>
-                                            <option value="bibit">Bibit</option>
-                                            <option value="benih">Benih</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="nama_produk" class="form-label">Nama Produk</label>
-                                        <input type="text" class="form-control" id="nama_produk" name="nama_produk">
-                                    </div>
-                                </div>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="satuan" class="form-label">Satuan</label>
+                                <input type="text" class="form-control" id="satuan" name="satuan" placeholder="kg, liter, pcs, dll" required>
                             </div>
-                            
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="satuan" class="form-label">Satuan</label>
-                                        <input type="text" class="form-control" id="satuan" name="satuan" placeholder="kg, liter, pcs, dll">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="kadaluwarsa" class="form-label">Kadaluwarsa</label>
-                                        <input type="date" class="form-control" id="kadaluwarsa" name="kadaluwarsa">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="harga" class="form-label">Harga</label>
-                                        <input type="number" class="form-control" id="harga" name="harga" step="0.01">
-                                    </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="kadaluwarsa" class="form-label">Kadaluwarsa</label>
+                                <input type="date" class="form-control" id="kadaluwarsa" name="kadaluwarsa">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="harga" class="form-label">Harga</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="number" class="form-control" id="harga" name="harga" step="0.01" placeholder="0.00" required>
                                 </div>
                             </div>
                         </div>
-
-                        <hr>
-
-                        <!-- Data Pemesanan -->
-                        <h5>Data Pemesanan</h5>
-                        <div class="alert alert-info">
-                            <strong>Info:</strong> Purchase order ini akan tercatat dalam riwayat sistem dengan detail lengkap.
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="tanggal_pesan" class="form-label">Tanggal Pesan</label>
-                                    <input type="date" class="form-control" id="tanggal_pesan" name="tanggal_pesan" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="tanggal_datang" class="form-label">Tanggal Datang</label>
-                                    <input type="date" class="form-control" id="tanggal_datang" name="tanggal_datang" required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="vendor" class="form-label">Vendor</label>
-                            <input type="text" class="form-control" id="vendor" name="vendor" required>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="jumlah_pesan" class="form-label">Jumlah Pesan</label>
-                                    <input type="number" class="form-control" id="jumlah_pesan" name="jumlah_pesan" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="jumlah_diterima" class="form-label">Jumlah Diterima</label>
-                                    <input type="number" class="form-control" id="jumlah_diterima" name="jumlah_diterima" value="0">
-                                    <small class="form-text text-muted">Biarkan 0 jika barang belum diterima</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Simpan Purchase Order
-                            </button>
-                            <a href="purchase.php" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Kembali
-                            </a>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Order Data -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <i class="fas fa-clipboard-list"></i>Data Pemesanan
+                    </h2>
+                    
+                    <div class="alert alert-info bg-opacity-10 border border-info border-opacity-25 mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Purchase order ini akan tercatat dalam riwayat sistem dengan detail lengkap.
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="tanggal_pesan" class="form-label">Tanggal Pesan</label>
+                                <input type="date" class="form-control" id="tanggal_pesan" name="tanggal_pesan" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="tanggal_datang" class="form-label">Tanggal Datang</label>
+                                <input type="date" class="form-control" id="tanggal_datang" name="tanggal_datang" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="vendor" class="form-label">Vendor</label>
+                        <input type="text" class="form-control" id="vendor" name="vendor" required placeholder="Nama vendor/supplier">
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="jumlah_pesan" class="form-label">Jumlah Pesan</label>
+                                <input type="number" class="form-control" id="jumlah_pesan" name="jumlah_pesan" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="jumlah_diterima" class="form-label">Jumlah Diterima</label>
+                                <input type="number" class="form-control" id="jumlah_diterima" name="jumlah_diterima" value="0">
+                                <small class="text-muted">Biarkan 0 jika barang belum diterima</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-3 mt-4 button-group">
+                    <a href="purchase.php" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i> Simpan Purchase Order
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -369,66 +391,137 @@ $existingProducts = getExistingProducts($connect);
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 $(document).ready(function() {
-    // Initialize Select2
+    // Initialize Select2 with search
     $('#kode_produk_existing').select2({
         placeholder: "Cari produk...",
-        allowClear: true
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#existing_product_section')
+    });
+    
+    // Initialize date pickers with Indonesian locale
+    flatpickr("#tanggal_pesan", {
+        dateFormat: "Y-m-d",
+        defaultDate: "today",
+        locale: "id"
+    });
+    
+    flatpickr("#tanggal_datang", {
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        locale: "id"
+    });
+    
+    flatpickr("#kadaluwarsa", {
+        dateFormat: "Y-m-d",
+        locale: "id"
     });
     
     // Toggle sections
     $('input[name="is_new_product"]').change(function() {
         if ($(this).val() == '1') {
-            $('#existing_product_section').hide();
-            $('#new_product_section').show();
+            $('#existing_product_section').slideUp(300, function() {
+                $('#new_product_section').slideDown(300);
+            });
             $('#product_info').hide();
         } else {
-            $('#existing_product_section').show();
-            $('#new_product_section').hide();
+            $('#new_product_section').slideUp(300, function() {
+                $('#existing_product_section').slideDown(300);
+            });
         }
+        
+        // Update radio card active state
+        $('.radio-card').removeClass('active');
+        $(this).closest('.radio-card').addClass('active');
     });
     
     // Show product info when selected
     $('#kode_produk_existing').change(function() {
         const selected = $(this).find('option:selected');
         if (selected.val()) {
-            const info = `
-                <strong>Nama:</strong> ${selected.data('nama')}<br>
-                <strong>Kategori:</strong> ${selected.data('kategori')}<br>
-                <strong>Satuan:</strong> ${selected.data('satuan')}<br>
-                <strong>Harga:</strong> Rp ${parseFloat(selected.data('harga')).toLocaleString('id-ID')}
-            `;
-            $('#info_display').html(info);
-            $('#product_info').show();
+            $('#product_code_badge').text(selected.val());
+            $('#info_nama').text(selected.data('nama'));
+            $('#info_kategori').text(selected.data('kategori'));
+            $('#info_satuan').text(selected.data('satuan'));
+            $('#info_harga').text(parseFloat(selected.data('harga')).toLocaleString('id-ID'));
+            $('#product_info').slideDown(300);
         } else {
-            $('#product_info').hide();
+            $('#product_info').slideUp(300);
         }
     });
     
-    // Form submission
+    // Form validation and submission
     $('#purchaseForm').submit(function(e) {
         e.preventDefault();
         
-        // Validation
         const isNewProduct = $('input[name="is_new_product"]:checked').val() == '1';
+        let isValid = true;
+        let errorMessage = '';
         
+        // Validate based on product type
         if (!isNewProduct && !$('#kode_produk_existing').val()) {
-            alert('Silakan pilih produk terlebih dahulu');
-            return;
+            isValid = false;
+            errorMessage = 'Silakan pilih produk terlebih dahulu';
+            $('#kode_produk_existing').focus();
         }
         
         if (isNewProduct) {
-            if (!$('#kategori').val() || !$('#nama_produk').val() || !$('#satuan').val() || !$('#harga').val()) {
-                alert('Semua field produk baru harus diisi');
-                return;
+            if (!$('#kategori').val()) {
+                isValid = false;
+                errorMessage = 'Silakan pilih kategori produk';
+                $('#kategori').focus();
+            } else if (!$('#nama_produk').val()) {
+                isValid = false;
+                errorMessage = 'Silakan isi nama produk';
+                $('#nama_produk').focus();
+            } else if (!$('#satuan').val()) {
+                isValid = false;
+                errorMessage = 'Silakan isi satuan produk';
+                $('#satuan').focus();
+            } else if (!$('#harga').val()) {
+                isValid = false;
+                errorMessage = 'Silakan isi harga produk';
+                $('#harga').focus();
             }
+        }
+        
+        // Validate order data
+        if (isValid && !$('#tanggal_pesan').val()) {
+            isValid = false;
+            errorMessage = 'Silakan isi tanggal pesan';
+            $('#tanggal_pesan').focus();
+        } else if (isValid && !$('#tanggal_datang').val()) {
+            isValid = false;
+            errorMessage = 'Silakan isi tanggal datang';
+            $('#tanggal_datang').focus();
+        } else if (isValid && !$('#vendor').val()) {
+            isValid = false;
+            errorMessage = 'Silakan isi nama vendor';
+            $('#vendor').focus();
+        } else if (isValid && !$('#jumlah_pesan').val()) {
+            isValid = false;
+            errorMessage = 'Silakan isi jumlah pesan';
+            $('#jumlah_pesan').focus();
+        }
+        
+        if (!isValid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian',
+                text: errorMessage,
+                confirmButtonColor: 'var(--primary)'
+            });
+            return;
         }
         
         // Disable submit button to prevent double submission
         const submitBtn = $(this).find('button[type="submit"]');
-        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Menyimpan...');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan...');
         
         // Submit via AJAX
         $.ajax({
@@ -438,25 +531,62 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    alert('Data berhasil disimpan dan tercatat dalam riwayat!');
-                    window.location.href = 'purchase.php';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Purchase order berhasil disimpan!',
+                        confirmButtonColor: 'var(--primary)',
+                        willClose: () => {
+                            window.location.href = 'purchase.php';
+                        }
+                    });
                 } else {
-                    alert('Error: ' + response.message);
-                    submitBtn.prop('disabled', false).html('<i class="fas fa-save"></i> Simpan Purchase Order');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: response.message || 'Terjadi kesalahan saat menyimpan data',
+                        confirmButtonColor: 'var(--primary)'
+                    });
+                    submitBtn.prop('disabled', false).html('<i class="fas fa-save me-2"></i> Simpan Purchase Order');
                 }
             },
-            error: function() {
-                alert('Terjadi kesalahan sistem');
-                submitBtn.prop('disabled', false).html('<i class="fas fa-save"></i> Simpan Purchase Order');
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Sistem',
+                    text: 'Terjadi kesalahan sistem: ' + error,
+                    confirmButtonColor: 'var(--primary)'
+                });
+                submitBtn.prop('disabled', false).html('<i class="fas fa-save me-2"></i> Simpan Purchase Order');
             }
         });
     });
     
-    // Set default dates
-    const today = new Date().toISOString().split('T')[0];
-    $('#tanggal_pesan').val(today);
+    // Set active state for radio cards on load
+    $('.radio-card').first().addClass('active');
+
+    // Efek parallax sederhana pada header
+    $('.card').mousemove(function(e) {
+        const x = e.pageX - $(this).offset().left;
+        const y = e.pageY - $(this).offset().top;
+        const centerX = $(this).width() / 2;
+        const centerY = $(this).height() / 2;
+        
+        const angleX = (y - centerY) / 20;
+        const angleY = (centerX - x) / 20;
+        
+        $(this).find('.card-header').css({
+            'background-position': `${50 + angleY}% ${50 + angleX}%`
+        });
+    });
+
+    // Reset saat mouse keluar
+    $('.card').mouseleave(function() {
+        $(this).find('.card-header').css({
+            'background-position': 'center center'
+        });
+    });
 });
 </script>
-
 </body>
 </html>
