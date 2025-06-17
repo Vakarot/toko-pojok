@@ -217,13 +217,13 @@ if (!$data) {
                 </div>
             </div>
         </div>
-        
-        <div class="card-footer no-print d-flex justify-content-end gap-3 p-4">
+
+        <div class="card-footer no-print d-flex justify-content-end gap-3 p-3 p-lg-4">
             <button onclick="window.print()" class="btn-action btn-print">
-                <i class="fas fa-print"></i> Cetak
+                <i class="fas fa-print me-1"></i> Cetak
             </button>
             <button onclick="window.close()" class="btn-action btn-close">
-                <i class="fas fa-times"></i> Tutup
+                <i class="fas fa-times me-1"></i> Tutup
             </button>
         </div>
     </div>
