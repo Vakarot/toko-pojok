@@ -1,5 +1,5 @@
 <?php
-// input_purchase.php - Form untuk input pemesanan baru
+// input_purchase.php - Form untuk input pemesanan baru dengan sistem riwayat
 
 session_start();
 include 'koneksi.php';
@@ -8,6 +8,25 @@ include 'koneksi.php';
 if (!isset($_SESSION['id_pengguna'])) {
     echo "<script>alert('Silakan login terlebih dahulu.'); window.location.href='login.php';</script>";
     exit();
+}
+
+// Fungsi untuk mencatat riwayat aktivitas
+function addToHistory($connect, $id_pengguna, $action) {
+    $query = "INSERT INTO riwayat (id_pengguna, action, timestamp) VALUES (?, ?, NOW())";
+    $stmt = mysqli_prepare($connect, $query);
+    mysqli_stmt_bind_param($stmt, "ss", $id_pengguna, $action);
+    return mysqli_stmt_execute($stmt);
+}
+
+// Fungsi untuk mendapatkan nama pengguna berdasarkan ID
+function getUserName($connect, $id_pengguna) {
+    $query = "SELECT nama FROM pengguna WHERE id_pengguna = ?";
+    $stmt = mysqli_prepare($connect, $query);
+    mysqli_stmt_bind_param($stmt, "s", $id_pengguna);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    return $row ? $row['nama'] : 'Unknown User';
 }
 
 // Fungsi untuk mendapatkan semua produk yang sudah ada
@@ -59,9 +78,9 @@ if ($_POST) {
     $id_pengguna = $_SESSION['id_pengguna'];
     
     // VALIDASI APAKAH ID_PENGGUNA ADA DI DATABASE
-    $checkUser = "SELECT id_pengguna FROM pengguna WHERE id_pengguna = ?";
+    $checkUser = "SELECT id_pengguna, nama FROM pengguna WHERE id_pengguna = ?";
     $stmtCheck = mysqli_prepare($connect, $checkUser);
-    mysqli_stmt_bind_param($stmtCheck, "i", $id_pengguna);
+    mysqli_stmt_bind_param($stmtCheck, "s", $id_pengguna);
     mysqli_stmt_execute($stmtCheck);
     $resultCheck = mysqli_stmt_get_result($stmtCheck);
     
@@ -69,6 +88,9 @@ if ($_POST) {
         echo json_encode(['success' => false, 'message' => 'User tidak ditemukan. Silakan login kembali.']);
         exit;
     }
+    
+    $userData = mysqli_fetch_assoc($resultCheck);
+    $userName = $userData['nama'];
     
     try {
         mysqli_begin_transaction($connect);
@@ -91,9 +113,22 @@ if ($_POST) {
             mysqli_stmt_bind_param($stmtProduk, "sssssd", $kode_produk, $kategori, $nama_produk, $satuan, $kadaluwarsa, $harga);
             mysqli_stmt_execute($stmtProduk);
             
+            // Catat riwayat penambahan produk baru
+            $actionNewProduct = "Menambahkan produk baru: $kode_produk - $nama_produk (Kategori: $kategori, Harga: Rp " . number_format($harga, 0, ',', '.') . ")";
+            addToHistory($connect, $id_pengguna, $actionNewProduct);
+            
         } else {
             // Produk yang sudah ada
             $kode_produk = $_POST['kode_produk_existing'];
+            
+            // Ambil nama produk untuk riwayat
+            $queryGetProduct = "SELECT nama_produk FROM produk WHERE kode_produk = ?";
+            $stmtGetProduct = mysqli_prepare($connect, $queryGetProduct);
+            mysqli_stmt_bind_param($stmtGetProduct, "s", $kode_produk);
+            mysqli_stmt_execute($stmtGetProduct);
+            $resultGetProduct = mysqli_stmt_get_result($stmtGetProduct);
+            $productData = mysqli_fetch_assoc($resultGetProduct);
+            $nama_produk = $productData['nama_produk'];
         }
         
         // Insert data pemesanan
@@ -118,8 +153,15 @@ if ($_POST) {
             throw new Exception("Gagal menyimpan pemesanan: " . mysqli_error($connect));
         }
         
+        // Ambil ID pemesanan yang baru saja dibuat
+        $id_pemesanan = mysqli_insert_id($connect);
+        
+        // Catat riwayat pemesanan
+        $actionPemesanan = "Membuat pemesanan baru: $kode_produk - $nama_produk dari vendor $vendor (Jumlah: $jumlah_pesan, Tanggal pesan: $tanggal_pesan, Tanggal datang: $tanggal_datang)";
+        addToHistory($connect, $id_pengguna, $actionPemesanan);
+        
         mysqli_commit($connect);
-        echo json_encode(['success' => true, 'message' => 'Data berhasil disimpan']);
+        echo json_encode(['success' => true, 'message' => 'Data berhasil disimpan dan riwayat tercatat']);
         
     } catch (Exception $e) {
         mysqli_rollback($connect);
@@ -139,6 +181,27 @@ $existingProducts = getExistingProducts($connect);
     <title>Input Purchase Order</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .history-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .history-info h6 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .history-info ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+        .history-info li {
+            margin-bottom: 5px;
+            color: #424242;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-4">
@@ -249,6 +312,9 @@ $existingProducts = getExistingProducts($connect);
 
                         <!-- Data Pemesanan -->
                         <h5>Data Pemesanan</h5>
+                        <div class="alert alert-info">
+                            <strong>Info:</strong> Purchase order ini akan tercatat dalam riwayat sistem dengan detail lengkap.
+                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -280,13 +346,18 @@ $existingProducts = getExistingProducts($connect);
                                 <div class="mb-3">
                                     <label for="jumlah_diterima" class="form-label">Jumlah Diterima</label>
                                     <input type="number" class="form-control" id="jumlah_diterima" name="jumlah_diterima" value="0">
+                                    <small class="form-text text-muted">Biarkan 0 jika barang belum diterima</small>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <button type="submit" class="btn btn-primary">Simpan Purchase Order</button>
-                            <a href="purchase.php" class="btn btn-secondary">Kembali</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Simpan Purchase Order
+                            </button>
+                            <a href="purchase.php" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Kembali
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -355,6 +426,10 @@ $(document).ready(function() {
             }
         }
         
+        // Disable submit button to prevent double submission
+        const submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Menyimpan...');
+        
         // Submit via AJAX
         $.ajax({
             url: '',
@@ -363,14 +438,16 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    alert('Data berhasil disimpan!');
+                    alert('Data berhasil disimpan dan tercatat dalam riwayat!');
                     window.location.href = 'purchase.php';
                 } else {
                     alert('Error: ' + response.message);
+                    submitBtn.prop('disabled', false).html('<i class="fas fa-save"></i> Simpan Purchase Order');
                 }
             },
             error: function() {
                 alert('Terjadi kesalahan sistem');
+                submitBtn.prop('disabled', false).html('<i class="fas fa-save"></i> Simpan Purchase Order');
             }
         });
     });
