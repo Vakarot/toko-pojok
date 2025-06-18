@@ -130,6 +130,7 @@ $total_pages = ceil($total / $per_page);
     <meta charset="UTF-8" />
     <title>Detail Penjualan</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
@@ -150,8 +151,8 @@ $total_pages = ceil($total / $per_page);
                     <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                     <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
                     <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
-                    <li><a href="cashier.php"><i class="fas fa-cash-register"></i>Cashier</a></li>
-                    <li><a href="history.php" class="active"><i class="fas fa-history"></i>History</a></li>
+                    <li><a href="cashier.php" class="active"><i class="fas fa-cash-register"></i>Cashier</a></li>
+                    <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
                 </ul>
             </nav>
@@ -161,7 +162,7 @@ $total_pages = ceil($total / $per_page);
                     <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                     <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
                     <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
-                    <li><a href="history.php" class="active"><i class="fas fa-history"></i>History</a></li>
+                    <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
                 </ul>
             </nav>
@@ -170,8 +171,8 @@ $total_pages = ceil($total / $per_page);
                 <ul>
                     <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                     <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
-                    <li><a href="cashier.php"><i class="fas fa-cash-register"></i>Cashier</a></li>
-                    <li><a href="history.php" class="active"><i class="fas fa-history"></i>History</a></li>
+                    <li><a href="cashier.php" class="active"><i class="fas fa-cash-register"></i>Cashier</a></li>
+                    <li><a href="history.php"><i class="fas fa-history"></i>History</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
                 </ul>
             </nav>
@@ -187,7 +188,7 @@ $total_pages = ceil($total / $per_page);
             </div>
             <div class="search-profile">
                 <form method="GET" class="d-flex">
-                    <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari penjualan..." aria-label="Search sales" class="form-control me-2" />
+                    <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search sales" class="form-control me-2" />
                 </form>
                 <div class="profile-dropdown dropdown">
                     <div
@@ -235,12 +236,31 @@ $total_pages = ceil($total / $per_page);
             </div>
         <?php endif; ?>
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <?php if (!empty($search)): ?>
                     <small class="text-muted">Hasil pencarian untuk: "<?= htmlspecialchars($search) ?>"</small>
                 <?php endif; ?>
             </div>
+
+            <a href="cashier.php">Kembali</a>
+
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted">Show:</span>
+                <select class="form-select items-per-page-select" onchange="updatePerPage(this.value)">
+                    <option value="10" <?= $per_page == 10 ? 'selected' : '' ?>>10</option>
+                    <option value="25" <?= $per_page == 25 ? 'selected' : '' ?>>25</option>
+                    <option value="50" <?= $per_page == 50 ? 'selected' : '' ?>>50</option>
+                    <option value="100" <?= $per_page == 100 ? 'selected' : '' ?>>100</option>
+                </select>
+            </div>
+        </div> -->
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button class="btn btn-success" onclick="window.location.href='cashier.php'">
+                <i class="bi bi-arrow-left me-2"></i>Kembali
+            </button>
+
             <div class="d-flex align-items-center gap-2">
                 <span class="text-muted">Show:</span>
                 <select class="form-select items-per-page-select" onchange="updatePerPage(this.value)">
