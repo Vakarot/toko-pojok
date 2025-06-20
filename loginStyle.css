@@ -1,24 +1,328 @@
-.kotak{
-    margin-top: 30px;
-    margin-left: 30px;
-    margin-right: 30px;
+:root {
+    /* Color Scheme */
+    --primary: #28a745;
+    --primary-dark: #218838;
+    --primary-light: rgba(40, 167, 69, 0.1);
+    --text-dark: #212529;
+    --text-medium: #495057;
+    --text-light: #6c757d;
+    --border: #dee2e6;
+    --bg: #f8f9fa;
+    --white: #ffffff;
+    
+    /* Spacing System (4px base) */
+    --space-1: 0.25rem;  /* 4px */
+    --space-2: 0.5rem;   /* 8px */
+    --space-3: 0.75rem;  /* 12px */
+    --space-4: 1rem;     /* 16px */
+    --space-5: 1.5rem;   /* 24px */
+    --space-6: 2rem;     /* 32px */
+    --space-7: 3rem;     /* 48px */
+    
+    /* Typography */
+    --text-xs: 0.75rem;  /* 12px */
+    --text-sm: 0.875rem; /* 14px */
+    --text-base: 1rem;   /* 16px */
+    --text-lg: 1.125rem; /* 18px */
+    --text-xl: 1.25rem;  /* 20px */
+    --text-2xl: 1.5rem;  /* 24px */
+    --text-3xl: 2rem;    /* 32px */
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
 }
 
-.kiri{
-    background: fixed;
-    border-radius: 5;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.kanan{
-    background: fixed;
-    padding-top: 20%;
+html {
+    height: 100%;
 }
 
-.kanan p{
-    color: silver;
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-dark);
+    line-height: 1.5;
+    height: 100%;
+    display: flex;
 }
 
-.forgotPassword{
-    color: green;
-    margin-left: 50%;
+/* Main Layout */
+.login-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Hero Section */
+.login-hero {
+    flex: 1;
+    display: none;
+    position: relative;
+    /* background: linear-gradient(135deg, var(--primary), #34ce57); */
+}
+
+.hero-image-container {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hero-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-6);
+    /* background: linear-gradient(transparent, rgba(0, 0, 0, 0.7)); */
+    color: var(--white);
+}
+
+.hero-overlay h2 {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+}
+
+.hero-overlay p {
+    font-size: var(--text-base);
+    font-weight: 300;
+    opacity: 0.9;
+}
+
+/* Form Section */
+.login-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-5);
+    min-height: 100vh;
+}
+
+.login-form-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Brand Header */
+.brand-header {
+    text-align: center;
+    margin-bottom: var(--space-7);
+}
+
+.brand-logo {
+    height: 48px;
+    margin-bottom: var(--space-5);
+}
+
+.welcome-message h1 {
+    font-size: var(--text-3xl);
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+}
+
+.welcome-message p {
+    color: var(--text-light);
+    font-size: var(--text-base);
+}
+
+/* Form Elements */
+.login-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: var(--space-5);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text-medium);
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background-color: var(--white);
+    transition: all 0.2s;
+}
+
+.input-group:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.input-icon {
+    padding: 0 var(--space-4);
+    color: var(--text-light);
+    font-size: var(--text-base);
+}
+
+.input-group input {
+    flex: 1;
+    padding: var(--space-3) var(--space-4);
+    padding-left: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: var(--text-base);
+    color: var(--text-dark);
+    height: 44px;
+}
+
+.input-group input::placeholder {
+    color: var(--text-light);
+    opacity: 0.7;
+}
+
+.password-toggle {
+    padding: 0 var(--space-4);
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: var(--text-base);
+    transition: color 0.2s;
+}
+
+.password-toggle:hover {
+    color: var(--primary);
+}
+
+/* Form Options */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: var(--space-5) 0;
+    font-size: var(--text-sm);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.remember-me input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.remember-me label {
+    color: var(--text-medium);
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.forgot-password:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Login Button */
+.login-btn {
+    width: 100%;
+    padding: var(--space-3);
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: var(--space-5);
+}
+
+.login-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .login-hero {
+        display: block;
+    }
+    
+    .login-content {
+        padding: var(--space-7);
+    }
+}
+
+@media (max-width: 576px) {
+    .login-content {
+        padding: var(--space-4);
+    }
+    
+    .brand-header {
+        margin-bottom: var(--space-6);
+    }
+    
+    .brand-logo {
+        margin-bottom: var(--space-4);
+    }
+    
+    .welcome-message h1 {
+        font-size: var(--text-2xl);
+    }
+    
+    .form-group {
+        margin-bottom: var(--space-4);
+    }
+    
+    .form-options {
+        margin: var(--space-4) 0;
+    }
+    
+    .login-btn {
+        margin-bottom: var(--space-4);
+    }
+    
+    .signup-prompt {
+        margin-top: var(--space-4);
+    }
+}
+
+@media (max-width: 400px) {
+    .login-content {
+        padding: var(--space-3);
+    }
+    
+    .input-group input {
+        padding: var(--space-2) var(--space-3);
+    }
+    
+    .input-icon, .password-toggle {
+        padding: 0 var(--space-3);
+    }
 }
