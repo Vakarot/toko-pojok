@@ -12,9 +12,6 @@
         exit();
     }
 
-    // Inisialisasi variabel search
-    // $search = isset($_GET['search']) ? $_GET['search'] : '';
-
     // Inisialisasi variabel
     $search = isset($_GET['search']) ? $_GET['search'] : '';
     $per_page = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
@@ -101,7 +98,7 @@
 <body>
     <div class="wrapper">
         <!-- Sidebar -->
-         <aside class="sidebar">
+        <aside class="sidebar">
             <div class="logo text-center">
                 <img src="assets/logo.png" alt="Logo TokoPojok" />
             </div>
@@ -369,10 +366,10 @@
 
             <!-- Pagination -->
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3">
-                        <div class="pagination-info mb-2 mb-md-0">
-                            Showing <?= $offset + 1 ?> to <?= min($offset + $per_page, $total_data) ?> of <?= $total_data ?> entries
-                        </div>
-                        <nav aria-label="Page navigation">
+                <div class="pagination-info mb-2 mb-md-0">
+                    Showing <?= $offset + 1 ?> to <?= min($offset + $per_page, $total_data) ?> of <?= $total_data ?> entries
+                </div>
+                <nav aria-label="Page navigation">
                             <ul class="pagination mb-0">
                                 <?php if ($page > 1): ?>
                                     <li class="page-item">
@@ -419,8 +416,8 @@
                                     </li>
                                 <?php endif; ?>
                             </ul>
-                        </nav>
-                    </div>
+                </nav>
+            </div>
 
             <script>
                 function updatePerPage(perPage) {

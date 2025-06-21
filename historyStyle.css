@@ -166,14 +166,54 @@ body {
     color: white;
 }
 
+/* ========== Pagination ========== */
+.pagination .page-item.active .page-link {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.pagination .page-link {
+    color: #28a745;
+}
+
+.pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+    background-color: #e6f4ea;
+    color: #218838;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+}
+
+.items-per-page-select {
+    width: 80px;
+    border-color: #ced4da;
+    border-radius: 8px;
+    padding: 0.25rem 0.5rem;
+}
+
+.items-per-page-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+}
+
+.pagination-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
 /* Table */
 .table-container {
-    background: #fff;
     padding: 1rem;
+    background: #fff;
     border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.1);
     overflow: hidden;
     position: relative;
-    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.1);
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
 }
 
 .table-header {
@@ -184,11 +224,19 @@ body {
     padding: 0 0.5rem;
 }
 
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+}
+
 .table {
-    min-width: 1200px;
+    width: 100%;
+    margin: 0;
     border-collapse: separate;
     border-spacing: 0;
-    margin: 0;
+    table-layout: auto;
 }
 
 .table thead {
@@ -208,7 +256,6 @@ body {
     padding: 1rem;
     text-align: center;
     vertical-align: middle;
-    border: none;
     position: relative;
 }
 
@@ -238,7 +285,6 @@ body {
     padding: 1rem;
     text-align: center;
     vertical-align: middle;
-    border: none;
     position: relative;
 }
 
