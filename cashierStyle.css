@@ -520,8 +520,91 @@ body {
     box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 } */
 
+/* Modal Animation */
+.modal.fade .modal-dialog {
+    transform: translateY(-50px);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Modal Content Styling */
+.modal-content {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+.modal-header {
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+}
+
+/* Detail Rows */
+.detail-row {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+/* Success Modal Specific */
+.success-alert .transaction-details {
+    border-left: 3px solid var(--primary-color);
+}
+
+/* Error Modal Specific */
+.error-alert .error-details {
+    border-left: 3px solid #dc3545;
+}
+
+/* Button Enhancements */
+.btn {
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-success {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-success:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+}
+
+
+
+
+
 /* Modern Alert Modals */
-.success-alert,
+/* .success-alert,
 .error-alert {
     display: flex;
     flex-direction: column;
@@ -607,35 +690,42 @@ body {
     justify-content: flex-end;
     gap: 0.75rem;
     border-top: 1px solid #e9ecef;
-}
+} */
 
 /* Animation for modals */
-@keyframes fadeIn {
+/* @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .modal.fade .modal-dialog {
     animation: fadeIn 0.3s ease-out;
-}
+} */
 
 /* Success specific styles */
-.success-alert .alert-header {
+/* .success-alert .alert-header {
     background: linear-gradient(135deg, #4ade80, #22c55e);
 }
 
 .success-alert .transaction-details {
     border-left: 3px solid #22c55e;
-}
+} */
 
 /* Error specific styles */
-.error-alert .alert-header {
+/* .error-alert .alert-header {
     background: linear-gradient(135deg, #f87171, #ef4444);
 }
 
 .error-alert .error-details {
     border-left: 3px solid #ef4444;
-}
+} */
+
+
+
+
+
+
+
 
 /* Payment Modal */
 /* .payment-modal .modal-content {

@@ -122,130 +122,121 @@ $display_order_id = generateOrderId();
 <body>
     <div class="wrapper">
         <!-- Success/Error Messages Modals -->
+        <!-- Success Modal -->
         <?php if (isset($_GET['success']) && isset($_SESSION['success_message'])): ?>
-        <div class="modal fade" id="successToast" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 shadow" style="border-radius: 12px; overflow: hidden;">
-                    <div class="modal-body p-0">
-                        <div class="success-alert">
-                            <div class="alert-header bg-success">
-                                <div class="alert-icon">
+            <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0" style="border-radius: 16px; overflow: hidden;">
+                        <div class="modal-header bg-success text-white border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
                                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="white"/>
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="currentColor"/>
                                     </svg>
                                 </div>
-                                <h5 class="alert-title">Transaction Successful</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="modal-title fw-bold">Transaction Successful</h5>
+                                </div>
                             </div>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4">
                             <div class="alert-content">
-                                <p><?= htmlspecialchars($_SESSION['success_message']) ?></p>
+                                <p class="mb-4"><?= htmlspecialchars($_SESSION['success_message']) ?></p>
                                 
                                 <?php if (isset($_SESSION['order_details'])): ?>
-                                <div class="transaction-details">
-                                    <div class="detail-row">
-                                        <span class="detail-label">Order ID:</span>
-                                        <span class="detail-value"><?= $_SESSION['order_details']['order_id'] ?></span>
+                                <div class="transaction-details bg-light p-3 rounded-3 mb-4">
+                                    <div class="detail-row d-flex justify-content-between py-2">
+                                        <span class="text-muted">Order ID:</span>
+                                        <span class="fw-bold"><?= $_SESSION['order_details']['order_id'] ?></span>
                                     </div>
-                                    <div class="detail-row">
-                                        <span class="detail-label">Total Amount:</span>
-                                        <span class="detail-value text-success"><?= formatRupiah($_SESSION['order_details']['total_harga']) ?></span>
+                                    <div class="detail-row d-flex justify-content-between py-2">
+                                        <span class="text-muted">Total Amount:</span>
+                                        <span class="fw-bold text-success"><?= formatRupiah($_SESSION['order_details']['total_harga']) ?></span>
                                     </div>
-                                    <div class="detail-row">
-                                        <span class="detail-label">Payment Method:</span>
-                                        <span class="detail-value"><?= ucfirst($_SESSION['order_details']['payment_method']) ?></span>
+                                    <div class="detail-row d-flex justify-content-between py-2">
+                                        <span class="text-muted">Payment Method:</span>
+                                        <span class="text-capitalize"><?= $_SESSION['order_details']['payment_method'] ?></span>
                                     </div>
-                                    <div class="detail-row">
-                                        <span class="detail-label">Items Purchased:</span>
-                                        <span class="detail-value"><?= $_SESSION['order_details']['total_items'] ?></span>
+                                    <div class="detail-row d-flex justify-content-between py-2">
+                                        <span class="text-muted">Items Purchased:</span>
+                                        <span><?= $_SESSION['order_details']['total_items'] ?></span>
                                     </div>
                                 </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="alert-footer">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                    Close
-                                </button>
-                                <button type="button" class="btn btn-success" onclick="window.print()">
-                                    <i class="fas fa-print me-2"></i>Print Receipt
-                                </button>
-                            </div>
+                        </div>
+                        <div class="modal-footer border-0 bg-light">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="window.print()">
+                                <i class="fas fa-print me-2"></i>Print Receipt
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <?php 
-        unset($_SESSION['success_message']);
-        unset($_SESSION['order_details']);
+            <?php 
+            unset($_SESSION['success_message']);
+            unset($_SESSION['order_details']);
         endif; ?>
 
+        <!-- Error Modal -->
         <?php if (isset($_GET['error']) && isset($_SESSION['error_message'])): ?>
-        <div class="modal fade" id="errorToast" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 shadow" style="border-radius: 12px; overflow: hidden;">
-                    <div class="modal-body p-0">
-                        <div class="error-alert">
-                            <div class="alert-header bg-danger">
-                                <div class="alert-icon">
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0" style="border-radius: 16px; overflow: hidden;">
+                        <div class="modal-header bg-danger text-white border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
                                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M11 15H13V17H11V15ZM11 7H13V13H11V7ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="white"/>
+                                        <path d="M11 15H13V17H11V15ZM11 7H13V13H11V7ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
                                     </svg>
                                 </div>
-                                <h5 class="alert-title">Transaction Failed</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="modal-title fw-bold">Transaction Failed</h5>
+                                </div>
                             </div>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4">
                             <div class="alert-content">
-                                <p><?= htmlspecialchars($_SESSION['error_message']) ?></p>
+                                <p class="mb-4"><?= htmlspecialchars($_SESSION['error_message']) ?></p>
                                 
                                 <?php if (isset($_SESSION['error_details'])): ?>
-                                <div class="error-details">
-                                    <div class="detail-row">
-                                        <span class="detail-label">Reference:</span>
-                                        <span class="detail-value"><?= $_SESSION['error_details']['order_id'] ?? 'N/A' ?></span>
+                                <div class="error-details bg-light p-3 rounded-3">
+                                    <div class="detail-row d-flex justify-content-between py-2">
+                                        <span class="text-muted">Reference:</span>
+                                        <span><?= $_SESSION['error_details']['order_id'] ?? 'N/A' ?></span>
                                     </div>
-                                    <div class="detail-row">
-                                        <span class="detail-label">Time:</span>
-                                        <span class="detail-value"><?= $_SESSION['error_details']['attempt_time'] ?? date('Y-m-d H:i:s') ?></span>
+                                    <div class="detail-row d-flex justify-content-between py-2">
+                                        <span class="text-muted">Time:</span>
+                                        <span><?= $_SESSION['error_details']['attempt_time'] ?? date('Y-m-d H:i:s') ?></span>
                                     </div>
-                                    <div class="detail-row">
-                                        <span class="detail-label">Payment Method:</span>
-                                        <span class="detail-value"><?= $_SESSION['error_details']['payment_method'] ?? 'Unknown' ?></span>
+                                    <div class="detail-row d-flex justify-content-between py-2">
+                                        <span class="text-muted">Payment Method:</span>
+                                        <span><?= $_SESSION['error_details']['payment_method'] ?? 'Unknown' ?></span>
                                     </div>
                                 </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="alert-footer">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-                                    <i class="fas fa-times me-2"></i>Close
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" onclick="window.location.reload()">
-                                    <i class="fas fa-redo me-2"></i>Try Again
-                                </button>
-                            </div>
+                        </div>
+                        <div class="modal-footer border-0 bg-light">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-2"></i>Close
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" onclick="window.location.reload()">
+                                <i class="fas fa-redo me-2"></i>Try Again
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <?php 
-        unset($_SESSION['error_message']);
-        unset($_SESSION['error_details']);
+            <?php 
+            unset($_SESSION['error_message']);
+            unset($_SESSION['error_details']);
         endif; ?>
-
-        <!-- Sidebar -->
-        <!-- <div class="sidebar">
-            <div class="logo">
-                <img src="assets/logo.png" alt="Logo TokoPojok" class="img-fluid">
-            </div>
-            <nav class="nav flex-column">
-                <a class="nav-link" href="index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                <a class="nav-link" href="inventory.php"><i class="fas fa-boxes"></i> Inventory</a>
-                <a class="nav-link" href="purchase.php"><i class="fas fa-shopping-cart"></i> Purchase</a>
-                <a class="nav-link active" href="kasir.php"><i class="fas fa-cash-register"></i> Cashier</a>
-                <a class="nav-link" href="history.php"><i class="fas fa-history"></i> History</a>
-                <a class="nav-link" href="notifikasi.php"><i class="fas fa-bell"></i> Notifikasi</a>
-            </nav>
-        </div> -->
 
         <aside class="sidebar">
             <div class="logo text-center">
@@ -265,33 +256,6 @@ $display_order_id = generateOrderId();
 
         <!-- Main content -->
         <div class="main-content">
-            <!-- <div class="header-top d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="header-title">Cashier</h1>
-                    <div class="header-subtitle">Transaction Calculation</div>
-                </div>
-                <div class="search-profile d-flex align-items-center gap-3">
-                    <form method="GET" class="d-flex">
-                        <input type="hidden" name="page" value="1">
-                        <input type="hidden" name="per_page" value="<?= $per_page ?>">
-                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search products" class="form-control me-2" />
-                    </form>
-
-                    <div class="profile-dropdown dropdown">
-                        <div class="profile-icon rounded-circle shadow-sm" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" role="button" tabindex="0" title="Profil">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <ul class="dropdown-menu dropdown-menu-end mt-2 rounded-3" aria-labelledby="profileDropdown">
-                            <li>
-                                <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div> -->
-
             <div class="header-top">
                 <div>
                     <h1 class="header-title">Cashier</h1>
@@ -503,7 +467,7 @@ $display_order_id = generateOrderId();
     </div>
 
     <!-- Success Payment Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <!-- <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0">
                 <div class="modal-header bg-success text-white">
@@ -565,10 +529,10 @@ $display_order_id = generateOrderId();
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Error Payment Modal -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+    <!-- <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0">
                 <div class="modal-header bg-danger text-white">
@@ -612,21 +576,33 @@ $display_order_id = generateOrderId();
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        
         // Auto show modals on page load
         document.addEventListener('DOMContentLoaded', function() {
-            <?php if (isset($_GET['success']) && isset($_SESSION['success_message'])): ?>
-            new bootstrap.Modal(document.getElementById('successToast')).show();
-            <?php endif; ?>
+            // Perbaikan pengecekan parameter URL
+            const urlParams = new URLSearchParams(window.location.search);
             
-            <?php if (isset($_GET['error']) && isset($_SESSION['error_message'])): ?>
-            new bootstrap.Modal(document.getElementById('errorToast')).show();
-            <?php endif; ?>
+            if (urlParams.has('success')) {
+                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+                
+                // Bersihkan URL setelah modal muncul
+                history.replaceState(null, null, window.location.pathname);
+            }
+            
+            if (urlParams.has('error')) {
+                var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                errorModal.show();
+                
+                // Bersihkan URL setelah modal muncul
+                history.replaceState(null, null, window.location.pathname);
+            }
         });
 
         function showPaymentModal() {

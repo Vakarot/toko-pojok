@@ -150,16 +150,33 @@ try {
     // Redirect to success page or back to cashier with success message
     header('Location: cashier.php?success=1');
     exit;
-    
+
 } catch (Exception $e) {
     // Rollback transaction
     mysqli_rollback($connect);
     
-    // Set error message
+    // Set error message dengan struktur yang benar
     $_SESSION['error_message'] = "Transaksi gagal: " . $e->getMessage();
+    $_SESSION['error_details'] = [
+        'order_id' => $order_id ?? 'N/A',
+        'attempt_time' => date('Y-m-d H:i:s'),
+        'payment_method' => $payment_method
+    ];
     
-    // Redirect back to cashier
-    header('Location: cashier.php?error=1');
+    // Redirect dengan parameter error
+    header('Location: cashier.php?error=true');
     exit;
 }
+
+// } catch (Exception $e) {
+//     // Rollback transaction
+//     mysqli_rollback($connect);
+    
+//     // Set error message
+//     $_SESSION['error_message'] = "Transaksi gagal: " . $e->getMessage();
+    
+//     // Redirect back to cashier
+//     header('Location: cashier.php?error=1');
+//     exit;
+// }
 ?>
