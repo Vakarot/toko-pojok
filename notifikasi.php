@@ -208,12 +208,6 @@
                             aria-labelledby="profileDropdown"
                         >
                             <li>
-                                <a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                                    <i class="fas fa-id-card text-success"></i> Profil
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li>
                                 <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
                                     <i class="fas fa-sign-out-alt"></i> Logout
                                 </a>
