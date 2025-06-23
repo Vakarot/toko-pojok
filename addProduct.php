@@ -103,6 +103,11 @@ if ($_POST) {
             $kadaluwarsa = $_POST['kadaluwarsa'];
             $harga = $_POST['harga'];
             
+            // Validasi data produk baru
+            if (empty($kategori) || empty($nama_produk) || empty($satuan) || empty($harga)) {
+                throw new Exception("Data produk baru tidak lengkap");
+            }
+            
             // Generate kode produk otomatis
             $kode_produk = generateProductCode($connect, $kategori);
             
@@ -111,7 +116,10 @@ if ($_POST) {
                            VALUES (?, ?, ?, ?, ?, ?, 0)";
             $stmtProduk = mysqli_prepare($connect, $queryProduk);
             mysqli_stmt_bind_param($stmtProduk, "sssssd", $kode_produk, $kategori, $nama_produk, $satuan, $kadaluwarsa, $harga);
-            mysqli_stmt_execute($stmtProduk);
+            
+            if (!mysqli_stmt_execute($stmtProduk)) {
+                throw new Exception("Gagal menyimpan produk baru: " . mysqli_error($connect));
+            }
             
             // Catat riwayat penambahan produk baru
             $actionNewProduct = "Menambahkan produk baru: $kode_produk - $nama_produk (Kategori: $kategori, Harga: Rp " . number_format($harga, 0, ',', '.') . ")";
@@ -121,17 +129,28 @@ if ($_POST) {
             // Produk yang sudah ada
             $kode_produk = $_POST['kode_produk_existing'];
             
+            // Validasi kode produk existing
+            if (empty($kode_produk)) {
+                throw new Exception("Kode produk tidak valid. Silakan pilih produk.");
+            }
+            
+            // Validasi apakah produk benar-benar ada di database
+            $queryCheckProduct = "SELECT kode_produk, nama_produk FROM produk WHERE kode_produk = ?";
+            $stmtCheckProduct = mysqli_prepare($connect, $queryCheckProduct);
+            mysqli_stmt_bind_param($stmtCheckProduct, "s", $kode_produk);
+            mysqli_stmt_execute($stmtCheckProduct);
+            $resultCheckProduct = mysqli_stmt_get_result($stmtCheckProduct);
+            
+            if (mysqli_num_rows($resultCheckProduct) == 0) {
+                throw new Exception("Produk dengan kode $kode_produk tidak ditemukan di database.");
+            }
+            
             // Ambil nama produk untuk riwayat
-            $queryGetProduct = "SELECT nama_produk FROM produk WHERE kode_produk = ?";
-            $stmtGetProduct = mysqli_prepare($connect, $queryGetProduct);
-            mysqli_stmt_bind_param($stmtGetProduct, "s", $kode_produk);
-            mysqli_stmt_execute($stmtGetProduct);
-            $resultGetProduct = mysqli_stmt_get_result($stmtGetProduct);
-            $productData = mysqli_fetch_assoc($resultGetProduct);
+            $productData = mysqli_fetch_assoc($resultCheckProduct);
             $nama_produk = $productData['nama_produk'];
         }
         
-        // Insert data pemesanan
+        // Validasi data pemesanan
         $tanggal_pesan = $_POST['tanggal_pesan'];
         $tanggal_datang = $_POST['tanggal_datang'];
         $vendor = $_POST['vendor'];
@@ -139,11 +158,26 @@ if ($_POST) {
         $jumlah_diterima = $_POST['jumlah_diterima'];
         $stat = 'Pending'; // Status awal
         
-        // PASTIKAN SEMUA VARIABEL TIDAK KOSONG
-        if (empty($kode_produk) || empty($tanggal_pesan) || empty($tanggal_datang) || empty($vendor)) {
-            throw new Exception("Data tidak lengkap");
+        // VALIDASI SEMUA DATA PEMESANAN
+        if (empty($kode_produk) || empty($tanggal_pesan) || empty($tanggal_datang) || empty($vendor) || empty($jumlah_pesan)) {
+            throw new Exception("Data pemesanan tidak lengkap. Semua field wajib diisi.");
         }
         
+        // Validasi format tanggal
+        if (!DateTime::createFromFormat('Y-m-d', $tanggal_pesan) || !DateTime::createFromFormat('Y-m-d', $tanggal_datang)) {
+            throw new Exception("Format tanggal tidak valid.");
+        }
+        
+        // Validasi jumlah
+        if (!is_numeric($jumlah_pesan) || $jumlah_pesan <= 0) {
+            throw new Exception("Jumlah pesanan harus berupa angka positif.");
+        }
+        
+        if (!is_numeric($jumlah_diterima) || $jumlah_diterima < 0) {
+            throw new Exception("Jumlah diterima harus berupa angka non-negatif.");
+        }
+        
+        // Insert data pemesanan
         $queryPemesanan = "INSERT INTO pemesanan (id_pengguna, kode_produk, tanggal_pesan, tanggal_datang, vendor, jumlah_pesan, jumlah_diterima, stat) 
                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmtPemesanan = mysqli_prepare($connect, $queryPemesanan);
@@ -161,7 +195,7 @@ if ($_POST) {
         addToHistory($connect, $id_pengguna, $actionPemesanan);
         
         mysqli_commit($connect);
-        echo json_encode(['success' => true, 'message' => 'Data berhasil disimpan dan riwayat tercatat']);
+        echo json_encode(['success' => true, 'message' => 'Data berhasil disimpan dan riwayat tercatat', 'id_pemesanan' => $id_pemesanan]);
         
     } catch (Exception $e) {
         mysqli_rollback($connect);
@@ -240,16 +274,16 @@ $existingProducts = getExistingProducts($connect);
                     </h2>
                     
                     <div class="mb-4">
-                        <label for="kode_produk_existing" class="form-label">Cari Produk</label>
+                        <label for="kode_produk_existing" class="form-label">Cari Produk <span class="text-danger">*</span></label>
                         <select class="form-select" id="kode_produk_existing" name="kode_produk_existing" style="width: 100%">
                             <option value="">-- Pilih Produk --</option>
                             <?php foreach ($existingProducts as $product): ?>
                             <option value="<?= $product['kode_produk'] ?>" 
-                                    data-nama="<?= $product['nama_produk'] ?>"
+                                    data-nama="<?= htmlspecialchars($product['nama_produk']) ?>"
                                     data-kategori="<?= $product['kategori'] ?>"
-                                    data-satuan="<?= $product['satuan'] ?>"
+                                    data-satuan="<?= htmlspecialchars($product['satuan']) ?>"
                                     data-harga="<?= $product['harga'] ?>">
-                                <?= $product['kode_produk'] ?> - <?= $product['nama_produk'] ?> (<?= $product['kategori'] ?>)
+                                <?= $product['kode_produk'] ?> - <?= htmlspecialchars($product['nama_produk']) ?> (<?= $product['kategori'] ?>)
                             </option>
                             <?php endforeach; ?>
                         </select>
@@ -283,8 +317,8 @@ $existingProducts = getExistingProducts($connect);
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="kategori" class="form-label">Kategori</label>
-                                <select class="form-select" id="kategori" name="kategori" required>
+                                <label for="kategori" class="form-label">Kategori <span class="text-danger">*</span></label>
+                                <select class="form-select" id="kategori" name="kategori">
                                     <option value="">-- Pilih Kategori --</option>
                                     <option value="pestisida">Pestisida</option>
                                     <option value="pupuk">Pupuk</option>
@@ -296,8 +330,8 @@ $existingProducts = getExistingProducts($connect);
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="nama_produk" class="form-label">Nama Produk</label>
-                                <input type="text" class="form-control" id="nama_produk" name="nama_produk" placeholder="Masukkan nama produk" required>
+                                <label for="nama_produk" class="form-label">Nama Produk <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="nama_produk" name="nama_produk" placeholder="Masukkan nama produk">
                             </div>
                         </div>
                     </div>
@@ -305,8 +339,8 @@ $existingProducts = getExistingProducts($connect);
                     <div class="row g-3">
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label for="satuan" class="form-label">Satuan</label>
-                                <input type="text" class="form-control" id="satuan" name="satuan" placeholder="kg, liter, pcs, dll" required>
+                                <label for="satuan" class="form-label">Satuan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="satuan" name="satuan" placeholder="kg, liter, pcs, dll">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -317,10 +351,10 @@ $existingProducts = getExistingProducts($connect);
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label for="harga" class="form-label">Harga</label>
+                                <label for="harga" class="form-label">Harga <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control" id="harga" name="harga" step="0.01" placeholder="0.00" required>
+                                    <input type="number" class="form-control" id="harga" name="harga" step="0.01" placeholder="0.00">
                                 </div>
                             </div>
                         </div>
@@ -341,34 +375,34 @@ $existingProducts = getExistingProducts($connect);
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="tanggal_pesan" class="form-label">Tanggal Pesan</label>
+                                <label for="tanggal_pesan" class="form-label">Tanggal Pesan <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_pesan" name="tanggal_pesan" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="tanggal_datang" class="form-label">Tanggal Datang</label>
+                                <label for="tanggal_datang" class="form-label">Tanggal Datang <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="tanggal_datang" name="tanggal_datang" required>
                             </div>
                         </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="vendor" class="form-label">Vendor</label>
+                        <label for="vendor" class="form-label">Vendor <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="vendor" name="vendor" required placeholder="Nama vendor/supplier">
                     </div>
                     
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="jumlah_pesan" class="form-label">Jumlah Pesan</label>
-                                <input type="number" class="form-control" id="jumlah_pesan" name="jumlah_pesan" required>
+                                <label for="jumlah_pesan" class="form-label">Jumlah Pesan <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="jumlah_pesan" name="jumlah_pesan" min="1" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="jumlah_diterima" class="form-label">Jumlah Diterima</label>
-                                <input type="number" class="form-control" id="jumlah_diterima" name="jumlah_diterima" value="0">
+                                <input type="number" class="form-control" id="jumlah_diterima" name="jumlah_diterima" min="0" value="0">
                                 <small class="text-muted">Biarkan 0 jika barang belum diterima</small>
                             </div>
                         </div>
@@ -463,11 +497,20 @@ $(document).ready(function() {
         let isValid = true;
         let errorMessage = '';
         
+        // Debug: log form data
+        console.log('Form data:', $(this).serializeArray());
+        console.log('Is new product:', isNewProduct);
+        console.log('Selected product:', $('#kode_produk_existing').val());
+        
         // Validate based on product type
-        if (!isNewProduct && !$('#kode_produk_existing').val()) {
-            isValid = false;
-            errorMessage = 'Silakan pilih produk terlebih dahulu';
-            $('#kode_produk_existing').focus();
+        if (!isNewProduct) {
+            const selectedProduct = $('#kode_produk_existing').val();
+            console.log('Validating existing product:', selectedProduct);
+            if (!selectedProduct || selectedProduct.trim() === '') {
+                isValid = false;
+                errorMessage = 'Silakan pilih produk terlebih dahulu';
+                $('#kode_produk_existing').focus();
+            }
         }
         
         if (isNewProduct) {
@@ -507,6 +550,10 @@ $(document).ready(function() {
             isValid = false;
             errorMessage = 'Silakan isi jumlah pesan';
             $('#jumlah_pesan').focus();
+        } else if (isValid && parseInt($('#jumlah_pesan').val()) <= 0) {
+            isValid = false;
+            errorMessage = 'Jumlah pesan harus lebih dari 0';
+            $('#jumlah_pesan').focus();
         }
         
         if (!isValid) {
@@ -529,7 +576,11 @@ $(document).ready(function() {
             method: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
+            beforeSend: function() {
+                console.log('Sending data:', $('#purchaseForm').serialize());
+            },
             success: function(response) {
+                console.log('Response:', response);
                 if (response.success) {
                     Swal.fire({
                         icon: 'success',
