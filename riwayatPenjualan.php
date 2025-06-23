@@ -7,7 +7,7 @@ function formatRupiah($angka) {
 }
 
 function formatTanggal($tanggal) {
-    return date('d/m/Y H:i', strtotime($tanggal));
+    return date('d/m/Y', strtotime($tanggal));
 }
 
 // Handle delete request
@@ -128,7 +128,7 @@ $total_pages = ceil($total / $per_page);
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
-    <title>Detail Penjualan</title>
+    <title>Sales Detail</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -183,7 +183,7 @@ $total_pages = ceil($total / $per_page);
     <main class="main-content">
         <div class="header-top">
             <div>
-                <h1 class="header-title">Detail Penjualan</h1>
+                <h1 class="header-title">Sales Detail</h1>
                 <div class="header-subtitle">Sales Transaction Information</div>
             </div>
             <div class="search-profile">

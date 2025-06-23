@@ -189,12 +189,7 @@
                 </div>
                 <div class="search-profile">
                     <form method="GET" class="d-flex">
-                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search notifications..." aria-label="Search notifications" class="form-control me-2" />
-                        <?php if (!empty($search)): ?>
-                            <a href="notifikasi.php" class="btn btn-outline-secondary me-2">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        <?php endif; ?>
+                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search notifications" class="form-control me-2" />
                     </form>
                     <div class="profile-dropdown dropdown">
                         <div
@@ -262,7 +257,6 @@
                         <div class="notification-meta">
                             <div class="notification-time">Category: <?= ucfirst($row['kategori']) ?></div>
                             <div class="notification-actions">
-                                <button class="notification-btn mark-read"><i class="far fa-check-circle"></i> Mark as read</button>
                                 <button class="notification-btn delete"><i class="far fa-trash-alt"></i> Delete</button>
                             </div>
                         </div>
@@ -290,7 +284,6 @@
                         <div class="notification-meta">
                             <div class="notification-time">Stock: <?= $row['jumlah_stok'] ?> units</div>
                             <div class="notification-actions">
-                                <button class="notification-btn mark-read"><i class="far fa-check-circle"></i> Mark as read</button>
                                 <button class="notification-btn delete"><i class="far fa-trash-alt"></i> Delete</button>
                             </div>
                         </div>
@@ -317,7 +310,6 @@
                         <div class="notification-meta">
                             <div class="notification-time"><?= timeAgo($row['tanggal_penjualan']) ?></div>
                             <div class="notification-actions">
-                                <button class="notification-btn mark-read"><i class="far fa-check-circle"></i> Mark as read</button>
                                 <button class="notification-btn delete"><i class="far fa-trash-alt"></i> Delete</button>
                             </div>
                         </div>
