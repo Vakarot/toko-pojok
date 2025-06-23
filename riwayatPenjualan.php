@@ -406,7 +406,7 @@ function buildPaginationLink($page, $per_page, $search) {
     if (!empty($search)) {
         $params['search'] = $search;
     }
-    return 'detailPenjualan.php?' . http_build_query($params);
+    return 'riwayatPenjualan.php?' . http_build_query($params);
 }
 ?>
 
