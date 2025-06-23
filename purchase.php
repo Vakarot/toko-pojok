@@ -85,7 +85,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purchase</title>
+    <title>Purchase - Toko Pojok</title>
 
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -125,7 +125,7 @@
             <?php } else if (isset($_SESSION['role']) && $_SESSION['role'] == 'Cashier') { ?> 
             <nav>
                 <ul>
-                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                    <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                     <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
                     <li><a href="cashier.php"><i class="fas fa-cash-register"></i>Cashier</a></li>
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>

@@ -436,27 +436,8 @@ body {
     color: white;
 }
 
-/* Scrollbar styling */
-.table-responsive::-webkit-scrollbar {
-    width: 8px;
-}
-
-.table-responsive::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.table-responsive::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 10px;
-}
-
-.table-responsive::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
 /* Payment Notification Modals */
-/* .modal-body {
+.modal-body {
     padding: 2rem;
 }
 
@@ -464,22 +445,22 @@ body {
     background-color: #f8f9fa;
     border-left: 3px solid #28a745;
     text-align: left;
-} */
+}
 
 /* Success Modal Icon */
-/* .fa-check-circle {
+.fa-check-circle {
     color: #28a745;
     animation: bounceIn 0.6s;
-} */
+}
 
 /* Error Modal Icon */
-/* .fa-exclamation-circle {
+.fa-exclamation-circle {
     color: #dc3545;
     animation: pulse 0.6s;
-} */
+}
 
 /* Animations */
-/* @keyframes bounceIn {
+@keyframes bounceIn {
     0% { transform: scale(0.5); opacity: 0; }
     50% { transform: scale(1.2); opacity: 1; }
     100% { transform: scale(1); }
@@ -489,10 +470,10 @@ body {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
-} */
+}
 
 /* Modal Buttons */
-/* .modal-body .btn {
+.modal-body .btn {
     min-width: 120px;
     font-weight: 500;
     transition: all 0.2s;
@@ -518,123 +499,26 @@ body {
     background-color: #c82333;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-} */
-
-/* Modern Alert Modals */
-.success-alert,
-.error-alert {
-    display: flex;
-    flex-direction: column;
 }
 
-.alert-header {
-    padding: 1.25rem;
-    display: flex;
-    align-items: center;
-    color: white;
-    position: relative;
+
+/* Scrollbar styling */
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
 }
 
-.alert-header .alert-icon {
-    width: 40px;
-    height: 40px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
 }
 
-.alert-header .alert-title {
-    margin: 0;
-    font-weight: 600;
-    flex-grow: 1;
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
 }
 
-.alert-header .btn-close {
-    margin-left: auto;
-    opacity: 0.8;
-}
-
-.alert-header .btn-close:hover {
-    opacity: 1;
-}
-
-.alert-content {
-    padding: 1.5rem;
-    background-color: white;
-}
-
-.alert-content p {
-    margin-bottom: 1.25rem;
-    color: #495057;
-}
-
-.transaction-details,
-.error-details {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-top: 1rem;
-}
-
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.detail-row:last-child {
-    border-bottom: none;
-}
-
-.detail-label {
-    color: #6c757d;
-    font-weight: 500;
-}
-
-.detail-value {
-    color: #212529;
-    font-weight: 500;
-}
-
-.alert-footer {
-    padding: 1rem 1.5rem;
-    background-color: #f8f9fa;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    border-top: 1px solid #e9ecef;
-}
-
-/* Animation for modals */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.modal.fade .modal-dialog {
-    animation: fadeIn 0.3s ease-out;
-}
-
-/* Success specific styles */
-.success-alert .alert-header {
-    background: linear-gradient(135deg, #4ade80, #22c55e);
-}
-
-.success-alert .transaction-details {
-    border-left: 3px solid #22c55e;
-}
-
-/* Error specific styles */
-.error-alert .alert-header {
-    background: linear-gradient(135deg, #f87171, #ef4444);
-}
-
-.error-alert .error-details {
-    border-left: 3px solid #ef4444;
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
 }
 
 /* Payment Modal */

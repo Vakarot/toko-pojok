@@ -104,63 +104,153 @@ $display_order_id = generateOrderId();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>Cashier - TokoPojok</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="cashierStyle.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashier</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="cashierStyle.css">
 </head>
-<body class="bg-white text-black">
-    <!-- Success/Error Messages -->
-    <?php if (isset($_GET['success']) && isset($_SESSION['success_message'])): ?>
-        <div id="successAlert" class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50 max-w-md">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    <span><?= htmlspecialchars($_SESSION['success_message']); ?></span>
+<body>
+    <div class="wrapper">
+        <!-- Success/Error Messages Modals -->
+        <?php if (isset($_GET['success']) && isset($_SESSION['success_message'])): ?>
+        <div class="modal fade" id="successToast" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow" style="border-radius: 12px; overflow: hidden;">
+                    <div class="modal-body p-0">
+                        <div class="success-alert">
+                            <div class="alert-header bg-success">
+                                <div class="alert-icon">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="white"/>
+                                    </svg>
+                                </div>
+                                <h5 class="alert-title">Transaction Successful</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="alert-content">
+                                <p><?= htmlspecialchars($_SESSION['success_message']) ?></p>
+                                
+                                <?php if (isset($_SESSION['order_details'])): ?>
+                                <div class="transaction-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Order ID:</span>
+                                        <span class="detail-value"><?= $_SESSION['order_details']['order_id'] ?></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Total Amount:</span>
+                                        <span class="detail-value text-success"><?= formatRupiah($_SESSION['order_details']['total_harga']) ?></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Payment Method:</span>
+                                        <span class="detail-value"><?= ucfirst($_SESSION['order_details']['payment_method']) ?></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Items Purchased:</span>
+                                        <span class="detail-value"><?= $_SESSION['order_details']['total_items'] ?></span>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="alert-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                                <button type="button" class="btn btn-success" onclick="window.print()">
+                                    <i class="fas fa-print me-2"></i>Print Receipt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button onclick="document.getElementById('successAlert').style.display='none'" class="text-green-700 hover:text-green-900">
-                    <i class="fas fa-times"></i>
-                </button>
             </div>
-            <?php if (isset($_SESSION['order_details'])): ?>
-                <div class="mt-2 text-sm">
-                    <p>Total: <?= formatRupiah($_SESSION['order_details']['total_harga']); ?></p>
-                    <p>Items: <?= $_SESSION['order_details']['total_items']; ?></p>
-                    <p>Metode: <?= ucfirst($_SESSION['order_details']['payment_method']); ?></p>
-                </div>
-            <?php endif; ?>
         </div>
         <?php 
         unset($_SESSION['success_message']);
         unset($_SESSION['order_details']);
-        ?>
-    <?php endif; ?>
+        endif; ?>
 
-    <?php if (isset($_GET['error']) && isset($_SESSION['error_message'])): ?>
-        <div id="errorAlert" class="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50 max-w-md">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    <span><?= htmlspecialchars($_SESSION['error_message']); ?></span>
+        <?php if (isset($_GET['error']) && isset($_SESSION['error_message'])): ?>
+        <div class="modal fade" id="errorToast" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow" style="border-radius: 12px; overflow: hidden;">
+                    <div class="modal-body p-0">
+                        <div class="error-alert">
+                            <div class="alert-header bg-danger">
+                                <div class="alert-icon">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11 15H13V17H11V15ZM11 7H13V13H11V7ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="white"/>
+                                    </svg>
+                                </div>
+                                <h5 class="alert-title">Transaction Failed</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="alert-content">
+                                <p><?= htmlspecialchars($_SESSION['error_message']) ?></p>
+                                
+                                <?php if (isset($_SESSION['error_details'])): ?>
+                                <div class="error-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Reference:</span>
+                                        <span class="detail-value"><?= $_SESSION['error_details']['order_id'] ?? 'N/A' ?></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Time:</span>
+                                        <span class="detail-value"><?= $_SESSION['error_details']['attempt_time'] ?? date('Y-m-d H:i:s') ?></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Payment Method:</span>
+                                        <span class="detail-value"><?= $_SESSION['error_details']['payment_method'] ?? 'Unknown' ?></span>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="alert-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-2"></i>Close
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="window.location.reload()">
+                                    <i class="fas fa-redo me-2"></i>Try Again
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button onclick="document.getElementById('errorAlert').style.display='none'" class="text-red-700 hover:text-red-900">
-                    <i class="fas fa-times"></i>
-                </button>
             </div>
         </div>
-        <?php unset($_SESSION['error_message']); ?>
-    <?php endif; ?>
+        <?php 
+        unset($_SESSION['error_message']);
+        unset($_SESSION['error_details']);
+        endif; ?>
 
-    <div class="min-h-screen flex">
         <!-- Sidebar -->
+        <!-- <div class="sidebar">
+            <div class="logo">
+                <img src="assets/logo.png" alt="Logo TokoPojok" class="img-fluid">
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a class="nav-link" href="inventory.php"><i class="fas fa-boxes"></i> Inventory</a>
+                <a class="nav-link" href="purchase.php"><i class="fas fa-shopping-cart"></i> Purchase</a>
+                <a class="nav-link active" href="kasir.php"><i class="fas fa-cash-register"></i> Cashier</a>
+                <a class="nav-link" href="history.php"><i class="fas fa-history"></i> History</a>
+                <a class="nav-link" href="notifikasi.php"><i class="fas fa-bell"></i> Notifikasi</a>
+            </nav>
+        </div> -->
+
         <aside class="sidebar">
             <div class="logo text-center">
                 <img src="assets/logo.png" alt="Logo TokoPojok" />
-            </div>
-            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'Owner') { ?> 
+            </div> 
             <nav>
                 <ul>
                     <li><a href="index.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
@@ -171,170 +261,191 @@ $display_order_id = generateOrderId();
                     <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
                 </ul>
             </nav>
-            <?php } else if (isset($_SESSION['role']) && $_SESSION['role'] == 'InventoryControl') { ?> 
-            <nav>
-                <ul>
-                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
-                    <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
-                    <li><a href="purchase.php"><i class="fas fa-shopping-cart"></i>Purchase</a></li>
-                    <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
-                </ul>
-            </nav>
-            <?php } else if (isset($_SESSION['role']) && $_SESSION['role'] == 'Cashier') { ?> 
-            <nav>
-                <ul>
-                    <li><a href="index.php" class="active"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
-                    <li><a href="inventory.php"><i class="fas fa-boxes"></i>Inventory</a></li>
-                    <li><a href="cashier.php" class="active"><i class="fas fa-cash-register"></i>Cashier</a></li>
-                    <li><a href="notifikasi.php"><i class="fas fa-bell"></i>Notifikasi</a></li>
-                </ul>
-            </nav>
-            <?php } ?>
         </aside>
-        
+
         <!-- Main content -->
-        <main class="flex-1 p-6">
-            <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-6">
+        <div class="main-content">
+            <!-- <div class="header-top d-flex justify-content-between align-items-center">
                 <div>
-                    <h1 class="font-bold text-lg leading-6">Cashier</h1>
-                    <p class="text-xs text-gray-400">Transaction Calculation</p>
+                    <h1 class="header-title">Cashier</h1>
+                    <div class="header-subtitle">Transaction Calculation</div>
                 </div>
-                <div class="flex items-center space-x-4 w-full sm:w-auto">
-                    <form method="GET" class="relative flex-1 sm:flex-none">
-                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search" aria-label="Search" class="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-300" />
-                        <button type="submit" class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm" aria-label="Search">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <?php if (!empty($search)): ?>
-                            <a href="cashier.php" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm hover:text-gray-600" aria-label="Clear search">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        <?php endif; ?>
+                <div class="search-profile d-flex align-items-center gap-3">
+                    <form method="GET" class="d-flex">
+                        <input type="hidden" name="page" value="1">
+                        <input type="hidden" name="per_page" value="<?= $per_page ?>">
+                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search products" class="form-control me-2" />
                     </form>
-                    <button class="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm hover:shadow-md focus:outline-none" type="button">
-                        <img alt="User profile picture" class="w-8 h-8 rounded-md object-cover" height="32" src="https://storage.googleapis.com/a1aa/image/8ee84d53-3068-4468-8c0a-770acd8c2d19.jpg" width="32" />
-                        <div class="text-left">
-                            <p class="font-semibold text-sm leading-5">Luthfan Kafi</p>
-                            <p class="text-xs text-gray-400 leading-4">Owner</p>
+
+                    <div class="profile-dropdown dropdown">
+                        <div class="profile-icon rounded-circle shadow-sm" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" role="button" tabindex="0" title="Profil">
+                            <i class="fas fa-user"></i>
                         </div>
-                        <i class="fas fa-chevron-down text-gray-600 text-xs"></i>
-                    </button>
+                        <ul class="dropdown-menu dropdown-menu-end mt-2 rounded-3" aria-labelledby="profileDropdown">
+                            <li>
+                                <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </header>
-            
-            <div class="flex flex-col lg:flex-row gap-6">
-                <!-- Table container -->
-                <section class="flex-1 bg-white rounded-xl border border-gray-100 p-6 shadow-sm overflow-x-auto">
-                    <table class="w-full text-xs text-left text-gray-600 border-separate border-spacing-y-2">
-                        <thead>
-                            <tr class="bg-gray-50 text-gray-400 text-xs font-semibold">
-                                <th class="py-3 px-4">Kode Item</th>
-                                <th class="py-3 px-4">Nama Produk</th>
-                                <th class="py-3 px-4 text-center">Satuan</th>
-                                <th class="py-3 px-4">Harga</th>
-                                <th class="py-3 px-4 text-center">Stok</th>
-                                <th class="py-3 px-4 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if ($result && mysqli_num_rows($result) > 0): ?>
-                                <?php while ($data = mysqli_fetch_assoc($result)) : ?>
-                                    <tr class="bg-white border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
-                                        <td class="py-4 px-4 whitespace-nowrap"><?= htmlspecialchars($data['kode_produk']); ?></td>
-                                        <td class="py-4 px-4"><?= htmlspecialchars($data['nama_produk']); ?></td>
-                                        <td class="py-4 px-4 text-center"><?= htmlspecialchars($data['satuan']); ?></td>
-                                        <td class="py-4 px-4"><?= formatRupiah($data['harga']); ?></td>
-                                        <td class="py-4 px-4 text-center">
-                                            <span class="<?= $data['jumlah_stok'] <= 10 ? 'text-red-600 font-semibold' : 'text-green-600' ?>">
-                                                <?= $data['jumlah_stok']; ?>
-                                            </span>
-                                        </td>
-                                        <td class="py-4 px-4 text-center">
-                                            <form method="POST" class="inline">
-                                                <input type="hidden" name="kode_produk" value="<?= $data['kode_produk']; ?>">
-                                                <input type="hidden" name="nama_produk" value="<?= $data['nama_produk']; ?>">
-                                                <input type="hidden" name="harga" value="<?= $data['harga']; ?>">
-                                                <input type="hidden" name="stok" value="<?= $data['jumlah_stok']; ?>">
-                                                <button type="submit" name="add_to_cart" class="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 text-xs">
-                                                    <i class="fas fa-plus"></i> Add
-                                                </button>
-                                            </form>
-                                        </td>
+            </div> -->
+
+            <div class="header-top">
+                <div>
+                    <h1 class="header-title">Cashier</h1>
+                    <div class="header-subtitle">Transaction Calculation</div>
+                </div>
+                <div class="search-profile">
+                    <form method="GET" class="d-flex">
+                        <input type="hidden" name="page" value="1">
+                        <input type="hidden" name="per_page" value="<?= $per_page ?>">
+                        <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search products" class="form-control me-2" />
+                    </form>
+
+                    <div class="profile-dropdown dropdown">
+                        <div
+                            class="profile-icon rounded-circle shadow-sm"
+                            id="profileDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            role="button"
+                            tabindex="0"
+                            title="Profil"
+                        >
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <ul
+                            class="dropdown-menu dropdown-menu-end mt-2 rounded-3"
+                            aria-labelledby="profileDropdown"
+                        >
+                            <li>
+                                <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Product Table -->
+                <div class="col-lg-8">
+                    <div class="product-table-container">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="sticky-top">
+                                    <tr>
+                                        <th>Kode Item</th>
+                                        <th>Nama Produk</th>
+                                        <th class="text-center">Satuan</th>
+                                        <th>Harga</th>
+                                        <th class="text-center">Stok</th>
+                                        <th class="text-center">Action</th>
                                     </tr>
-                                <?php endwhile; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="6" class="text-center py-4 text-gray-400 font-semibold">Tidak ada produk ditemukan.</td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </section>
-                
-                <!-- Order section -->
-                <section class="flex flex-col justify-between w-full lg:w-96 bg-white rounded-xl border border-gray-100 shadow-sm">
-                    <div>
-                        <header class="flex items-center justify-between border-b border-gray-200 p-4">
-                            <div class="flex items-center space-x-3">
-                                <div class="bg-green-800 rounded-md p-2 text-white flex items-center justify-center">
-                                    <i class="fas fa-clipboard-list text-lg"></i>
-                                </div>
+                                </thead>
+                                <tbody>
+                                    <?php if ($result && mysqli_num_rows($result) > 0): ?>
+                                        <?php while ($data = mysqli_fetch_assoc($result)) : ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($data['kode_produk']); ?></td>
+                                                <td><?= htmlspecialchars($data['nama_produk']); ?></td>
+                                                <td class="text-center"><?= htmlspecialchars($data['satuan']); ?></td>
+                                                <td><?= formatRupiah($data['harga']); ?></td>
+                                                <td class="text-center">
+                                                    <span class="badge <?= $data['jumlah_stok'] <= 10 ? 'bg-warning' : 'bg-success' ?>">
+                                                        <?= $data['jumlah_stok']; ?>
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <form method="POST" class="d-inline">
+                                                        <input type="hidden" name="kode_produk" value="<?= $data['kode_produk']; ?>">
+                                                        <input type="hidden" name="nama_produk" value="<?= $data['nama_produk']; ?>">
+                                                        <input type="hidden" name="harga" value="<?= $data['harga']; ?>">
+                                                        <input type="hidden" name="stok" value="<?= $data['jumlah_stok']; ?>">
+                                                        <button type="submit" name="add_to_cart" class="btn btn-sm btn-success d-flex align-items-center gap-1">
+                                                            <i class="fas fa-plus"></i> <span>Add</span>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4 text-muted">Tidak ada produk ditemukan.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Panel -->
+                <div class="col-lg-4">
+                    <div class="order-panel">
+                        <div class="order-header d-flex justify-content-between align-items-center">
+                            <div class="order-title d-flex gap-3 align-items-center">
+                                <div class="order-icon"><i class="fas fa-clipboard-list"></i></div>
                                 <div>
-                                    <h2 class="font-semibold text-sm text-black">Pesanan</h2>
-                                    <p class="text-xs text-gray-400">Order ID <?= $display_order_id ?></p>
+                                    <h6 class="mb-0 fw-bold">Pesanan</h6>
+                                    <small class="text-muted">Order <?= $display_order_id ?></small>
                                 </div>
                             </div>
-                            <form method="POST" class="inline">
-                                <button type="submit" name="clear_cart" class="text-red-600 hover:text-red-800 focus:outline-none" title="Clear Cart">
-                                <a href="riwayatPenjualan.php">Riwayat</a>
-                                    <i class="fas fa-trash text-lg"></i>
-                                </button>
-                            </form>
-                        </header>
-                        
-                        <div class="max-h-[480px] overflow-y-auto">
+                            <div class="d-flex gap-2">
+                                <a href="riwayatPenjualan.php" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-history"></i>
+                                </a>
+                                <form method="POST" class="d-inline">
+                                    <button type="submit" name="clear_cart" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="order-body">
                             <?php if (empty($_SESSION['cart'])): ?>
-                                <div class="h-[480px] flex items-center justify-center text-gray-300 text-sm font-semibold">
-                                    Silakan Pilih Produk...
+                                <div class="order-empty">
+                                    <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                                    <p class="mb-0">Silakan Pilih Produk...</p>
                                 </div>
                             <?php else: ?>
-                                <div class="p-2">
+                                <div class="order-item">
                                     <?php foreach ($_SESSION['cart'] as $kode_produk => $item): ?>
                                         <div class="border-b border-gray-100 py-3 px-2">
-                                            <div class="flex justify-between items-start mb-2">
-                                                <div class="flex-1">
-                                                    <p class="font-semibold text-xs text-black"><?= htmlspecialchars($item['nama_produk']); ?></p>
-                                                    <p class="text-xs text-gray-400"><?= htmlspecialchars($kode_produk); ?></p>
-                                                    <p class="text-xs text-green-600 font-semibold"><?= formatRupiah($item['harga']); ?></p>
-                                                </div>
-                                            </div>
                                             
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex items-center space-x-2">
-                                                    <form method="POST" class="inline">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <div>
+                                                    <h6 class="mb-0"><?= htmlspecialchars($item['nama_produk']); ?></h6>
+                                                    <small class="text-muted"><?= htmlspecialchars($kode_produk); ?></small>
+                                                </div>
+                                                <div class="text-success fw-bold"><?= formatRupiah($item['harga']); ?></div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="quantity-control d-flex align-items-center">
+                                                    <form method="POST" class="d-inline">
                                                         <input type="hidden" name="kode_produk" value="<?= $kode_produk; ?>">
                                                         <input type="hidden" name="action" value="decrease">
-                                                        <button type="submit" name="update_quantity" class="bg-red-500 text-white w-6 h-6 rounded-full text-xs hover:bg-red-600 flex items-center justify-center">
+                                                        <button type="submit" name="update_quantity" class="quantity-btn btn-danger">
                                                             <i class="fas fa-minus"></i>
                                                         </button>
                                                     </form>
-                                                    
-                                                    <span class="bg-gray-100 px-3 py-1 rounded-md text-xs font-semibold min-w-[40px] text-center">
-                                                        <?= $item['quantity']; ?>
-                                                    </span>
-                                                    
-                                                    <form method="POST" class="inline">
+                                                    <span class="fw-bold px-2"><?= $item['quantity']; ?></span>
+                                                    <form method="POST" class="d-inline">
                                                         <input type="hidden" name="kode_produk" value="<?= $kode_produk; ?>">
                                                         <input type="hidden" name="action" value="increase">
-                                                        <button type="submit" name="update_quantity" class="bg-green-500 text-white w-6 h-6 rounded-full text-xs hover:bg-green-600 flex items-center justify-center" <?= $item['quantity'] >= $item['stok'] ? 'disabled' : ''; ?>>
+                                                        <button type="submit" name="update_quantity" class="quantity-btn btn-success">
                                                             <i class="fas fa-plus"></i>
                                                         </button>
                                                     </form>
                                                 </div>
-                                                
-                                                <div class="text-right">
-                                                    <p class="text-xs font-semibold text-black"><?= formatRupiah($item['harga'] * $item['quantity']); ?></p>
-                                                    <p class="text-xs text-gray-400">Stok: <?= $item['stok']; ?></p>
+                                                <div class="text-end">
+                                                    <div class="fw-bold"><?= formatRupiah($item['harga'] * $item['quantity']); ?></div>
+                                                    <small class="text-muted">Stok: <?= $item['stok']; ?></small>
                                                 </div>
                                             </div>
                                         </div>
@@ -342,76 +453,199 @@ $display_order_id = generateOrderId();
                                 </div>
                             <?php endif; ?>
                         </div>
-                    </div>
-                    
-                    <div class="bg-green-800 rounded-b-xl p-6 text-white shadow-[0_10px_15px_-3px_rgba(31,91,0,0.3)]">
-                        <div class="flex items-center justify-between mb-4">
+  
+                        <div class="order-footer d-flex justify-content-between align-items-center">
                             <div>
-                                <p class="text-xs font-normal"><?= $total_items; ?> Items</p>
-                                <p class="font-semibold text-lg"><?= formatRupiah($total_harga); ?></p>
+                                <small class="d-block"><?= $total_items; ?> Items</small>
+                                <h5 class="mb-0 fw-bold"><?= formatRupiah($total_harga); ?></h5>
                             </div>
                             <?php if (!empty($_SESSION['cart'])): ?>
-                                <button onclick="showPaymentModal()" class="bg-white text-green-800 font-semibold rounded-md px-6 py-2 hover:bg-gray-100 focus:outline-none" type="button">
-                                    Order
-                                </button>
+                                <button onclick="showPaymentModal()" class="btn btn-light text-success fw-bold">Order</button>
                             <?php else: ?>
-                                <button class="bg-gray-300 text-gray-500 font-semibold rounded-md px-6 py-2 cursor-not-allowed" type="button" disabled>
-                                    Order
-                                </button>
+                                <button class="btn btn-light text-muted" disabled>Order</button>
                             <?php endif; ?>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
-        </main>
+        </div>
     </div>
 
     <!-- Payment Modal -->
-    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-md w-full p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold">Pilih Metode Pembayaran</h3>
-                    <button onclick="hidePaymentModal()" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times"></i>
-                    </button>
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">Pilih Metode Pembayaran</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
-                <div class="mb-6">
-                    <p class="text-sm text-gray-600 mb-2">Total Pembayaran:</p>
-                    <p class="text-2xl font-bold text-green-600"><?= formatRupiah($total_harga); ?></p>
-                    <p class="text-sm text-gray-500 mt-1">Order ID: <?= $display_order_id ?></p>
-                </div>
-                
-                <div class="space-y-3">
-                    <button onclick="processPayment('tunai')" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 flex items-center justify-center space-x-2">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <span>Tunai</span>
-                    </button>
+                <div class="modal-body p-4">
+                    <div class="payment-summary mb-4 p-3 bg-light rounded">
+                        <p class="text-muted mb-1">Total Pembayaran:</p>
+                        <h3 class="fw-bold text-success"><?= formatRupiah($total_harga); ?></h3>
+                        <small class="text-muted">Order ID: <?= $display_order_id ?></small>
+                    </div>
                     
-                    <button onclick="processPayment('qris')" class="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center space-x-2">
-                        <i class="fas fa-qrcode"></i>
-                        <span>QRIS</span>
+                    <div class="payment-options">
+                        <button onclick="processPayment('tunai')" class="btn btn-payment btn-primary w-100 py-3 mb-3 d-flex align-items-center justify-content-center gap-3">
+                            <i class="fas fa-money-bill-wave fs-4"></i>
+                            <span class="fs-5 fw-bold">Tunai</span>
+                        </button>
+                        
+                        <button onclick="processPayment('qris')" class="btn btn-payment btn-purple w-100 py-3 d-flex align-items-center justify-content-center gap-3">
+                            <i class="fas fa-qrcode fs-4"></i>
+                            <span class="fs-5 fw-bold">QRIS</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Payment Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-check-circle me-2"></i> Pembayaran Berhasil
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success">
+                        <?= htmlspecialchars($_SESSION['success_message']) ?>
+                    </div>
+                    
+                    <div class="receipt-container bg-light p-3 rounded">
+                        <div class="text-center mb-3">
+                            <h5 class="fw-bold">Struk Pembayaran</h5>
+                            <small class="text-muted"><?= $_SESSION['order_details']['tanggal'] ?></small>
+                        </div>
+                        
+                        <div class="receipt-details">
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span>Order ID:</span>
+                                <span class="fw-bold"><?= $_SESSION['order_details']['order_id'] ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between border-bottom py-2">
+                                <span>Kasir:</span>
+                                <span><?= $_SESSION['order_details']['kasir'] ?></span>
+                            </div>
+                            
+                            <div class="items-list my-3">
+                                <h6 class="fw-bold">Items:</h6>
+                                <?php foreach ($_SESSION['order_details']['items'] as $item): ?>
+                                <div class="d-flex justify-content-between">
+                                    <span><?= htmlspecialchars($item) ?></span>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                            
+                            <div class="total-section border-top pt-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold">Total:</span>
+                                    <span class="fw-bold text-success"><?= formatRupiah($_SESSION['order_details']['total_harga']) ?></span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Metode:</span>
+                                    <span><?= ucfirst($_SESSION['order_details']['payment_method']) ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Tutup
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="window.print()">
+                        <i class="fas fa-print me-2"></i>Cetak Struk
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Error Payment Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Pembayaran Gagal
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <?= htmlspecialchars($_SESSION['error_message']) ?>
+                    </div>
+                    
+                    <?php if (isset($_SESSION['error_details'])): ?>
+                    <div class="error-details bg-light p-3 rounded">
+                        <h6 class="fw-bold">Detail Transaksi:</h6>
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span>Waktu:</span>
+                            <span><?= $_SESSION['error_details']['attempt_time'] ?></span>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span>Metode:</span>
+                            <span><?= ucfirst($_SESSION['error_details']['payment_method']) ?></span>
+                        </div>
+                        <?php if (isset($_SESSION['error_details']['order_id'])): ?>
+                        <div class="d-flex justify-content-between py-2">
+                            <span>Referensi:</span>
+                            <span><?= $_SESSION['error_details']['order_id'] ?></span>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Tutup
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="window.location.reload()">
+                        <i class="fas fa-sync-alt me-2"></i>Coba Lagi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
+        // Auto show modals on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (isset($_GET['success']) && isset($_SESSION['success_message'])): ?>
+            new bootstrap.Modal(document.getElementById('successToast')).show();
+            <?php endif; ?>
+            
+            <?php if (isset($_GET['error']) && isset($_SESSION['error_message'])): ?>
+            new bootstrap.Modal(document.getElementById('errorToast')).show();
+            <?php endif; ?>
+        });
+
         function showPaymentModal() {
-            document.getElementById('paymentModal').classList.remove('hidden');
+            var paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            paymentModal.show();
         }
         
         function hidePaymentModal() {
-            document.getElementById('paymentModal').classList.add('hidden');
+            var paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+            paymentModal.hide();
         }
         
         function processPayment(method) {
             // Show loading state
-            const modal = document.getElementById('paymentModal');
-            const buttons = modal.querySelectorAll('button');
-            buttons.forEach(btn => btn.disabled = true);
+            const buttons = document.querySelectorAll('#paymentModal .btn-payment');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...';
+            });
             
             // Create form and submit
             const form = document.createElement('form');
@@ -426,6 +660,25 @@ $display_order_id = generateOrderId();
             form.appendChild(methodInput);
             document.body.appendChild(form);
             form.submit();
+            
+            // Show loading state
+            // const modal = document.getElementById('paymentModal');
+            // const buttons = modal.querySelectorAll('button');
+            // buttons.forEach(btn => btn.disabled = true);
+            
+            // Create form and submit
+            // const form = document.createElement('form');
+            // form.method = 'POST';
+            // form.action = 'process_payment.php';
+            
+            // const methodInput = document.createElement('input');
+            // methodInput.type = 'hidden';
+            // methodInput.name = 'payment_method';
+            // methodInput.value = method;
+            
+            // form.appendChild(methodInput);
+            // document.body.appendChild(form);
+            // form.submit();
         }
         
         // Close modal when clicking outside
