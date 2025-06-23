@@ -107,7 +107,18 @@
         $count_query .= " WHERE " . implode(' AND ', $conditions);
     }
 
-    // Query untuk data
+    // Query untuk total data (count)
+    $count_stmt = mysqli_prepare($connect, $count_query);
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($count_stmt, $types, ...$params);
+    }
+    mysqli_stmt_execute($count_stmt);
+    $count_result = mysqli_stmt_get_result($count_stmt);
+    $total_row = mysqli_fetch_assoc($count_result);
+    $total = $total_row['total'];
+    $total_pages = ceil($total / $per_page);
+
+    // Query untuk data dengan pagination
     $query .= " ORDER BY r.timestamp DESC LIMIT ? OFFSET ?";
     $params[] = $per_page;
     $params[] = $offset;
@@ -120,22 +131,6 @@
     }
     mysqli_stmt_execute($stmt);
     $history_result = mysqli_stmt_get_result($stmt);
-
-    // Query untuk total data
-    $count_stmt = mysqli_prepare($connect, $count_query);
-    if (!empty($params)) {
-        // Hapus parameter LIMIT dan OFFSET untuk count
-        $count_params = array_slice($params, 0, count($params) - 2);
-        $count_types = substr($types, 0, -2);
-        if (!empty($count_types)) {
-            mysqli_stmt_bind_param($count_stmt, $count_types, ...$count_params);
-        }
-    }
-    mysqli_stmt_execute($count_stmt);
-    $count_result = mysqli_stmt_get_result($count_stmt);
-    $total_row = mysqli_fetch_assoc($count_result);
-    $total = $total_row['total'];
-    $total_pages = ceil($total / $per_page);
 
     // Get users untuk filter dropdown
     $users_query = "SELECT id_pengguna, nama, role FROM pengguna ORDER BY nama";
@@ -154,13 +149,16 @@
         FROM riwayat r";
 
     if (!empty($conditions)) {
-        $stats_query .= " JOIN pengguna p ON r.id_pengguna = p.id_pengguna WHERE " . implode(' AND ', array_slice($conditions, 0, -2));
+        $stats_query .= " JOIN pengguna p ON r.id_pengguna = p.id_pengguna WHERE " . implode(' AND ', $conditions);
     }
 
     $stats_stmt = mysqli_prepare($connect, $stats_query);
     if (!empty($params) && count($params) > 2) {
-        $stats_types = str_repeat('s', count($params) - 2);
-        mysqli_stmt_bind_param($stats_stmt, $stats_types, ...array_slice($params, 0, -2));
+        $stats_types = substr($types, 0, -2); // Remove 'ii' for LIMIT and OFFSET
+        $stats_params = array_slice($params, 0, -2); // Remove LIMIT and OFFSET values
+        if (!empty($stats_types)) {
+            mysqli_stmt_bind_param($stats_stmt, $stats_types, ...$stats_params);
+        }
     }
     mysqli_stmt_execute($stats_stmt);
     $stats_result = mysqli_stmt_get_result($stats_stmt);
@@ -189,6 +187,30 @@
     $activity_types = [];
     while ($row = mysqli_fetch_assoc($activity_types_result)) {
         $activity_types[] = $row;
+    }
+
+    // Function to build URL parameters
+    function buildUrlParams($excludeParams = []) {
+        global $search, $filter_user, $date_from, $date_to, $per_page;
+        $params = [];
+        
+        if (!in_array('search', $excludeParams) && !empty($search)) {
+            $params[] = 'search=' . urlencode($search);
+        }
+        if (!in_array('filter_user', $excludeParams) && !empty($filter_user)) {
+            $params[] = 'filter_user=' . urlencode($filter_user);
+        }
+        if (!in_array('date_from', $excludeParams) && !empty($date_from)) {
+            $params[] = 'date_from=' . urlencode($date_from);
+        }
+        if (!in_array('date_to', $excludeParams) && !empty($date_to)) {
+            $params[] = 'date_to=' . urlencode($date_to);
+        }
+        if (!in_array('per_page', $excludeParams) && $per_page != 10) {
+            $params[] = 'per_page=' . $per_page;
+        }
+        
+        return !empty($params) ? '&' . implode('&', $params) : '';
     }
 ?>
 
@@ -249,6 +271,19 @@
                 </div>
                 <div class="search-profile">
                     <form method="GET" class="d-flex">
+                        <!-- Preserve existing filters when searching -->
+                        <?php if (!empty($filter_user)): ?>
+                            <input type="hidden" name="filter_user" value="<?= htmlspecialchars($filter_user) ?>">
+                        <?php endif; ?>
+                        <?php if (!empty($date_from)): ?>
+                            <input type="hidden" name="date_from" value="<?= htmlspecialchars($date_from) ?>">
+                        <?php endif; ?>
+                        <?php if (!empty($date_to)): ?>
+                            <input type="hidden" name="date_to" value="<?= htmlspecialchars($date_to) ?>">
+                        <?php endif; ?>
+                        <?php if ($per_page != 10): ?>
+                            <input type="hidden" name="per_page" value="<?= $per_page ?>">
+                        <?php endif; ?>
                         <input type="search" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search..." aria-label="Search activities" class="form-control me-2" />
                     </form>
                     <div class="profile-dropdown dropdown">
@@ -283,7 +318,7 @@
                     <?php if (!empty($search)): ?>
                         <small class="text-muted">Hasil pencarian untuk: "<?= htmlspecialchars($search) ?>"</small>
                     <?php endif; ?>
-                    <a href="?export=csv<?= $filter_user ? '&filter_user=' . urlencode($filter_user) : '' ?><?= $date_from ? '&date_from=' . urlencode($date_from) : '' ?><?= $date_to ? '&date_to=' . urlencode($date_to) : '' ?>" 
+                    <a href="?export=csv<?= buildUrlParams(['per_page']) ?>" 
                        class="btn btn-success">
                         <i class="fas fa-download"></i> Export CSV
                     </a>
@@ -301,6 +336,14 @@
 
             <!-- Filter Form -->
             <form method="GET" class="mb-4">
+                <!-- Preserve search parameter -->
+                <?php if (!empty($search)): ?>
+                    <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+                <?php endif; ?>
+                <?php if ($per_page != 10): ?>
+                    <input type="hidden" name="per_page" value="<?= $per_page ?>">
+                <?php endif; ?>
+                
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label for="filter_user" class="form-label">Filter Pengguna</label>
@@ -417,75 +460,80 @@
                 </div>
             </div>
 
-
             <!-- Pagination -->
             <?php if ($total_pages > 1): ?>
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3">
                     <div class="pagination-info mb-2 mb-md-0">
                         Showing <?= $offset + 1 ?> to <?= min($offset + $per_page, $total) ?> of <?= $total ?> entries
                     </div>
-                        <nav aria-label="History pagination">
-                            <ul class="pagination justify-content-center">
-                                <?php if ($page > 1): ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<?= $page - 1 ?><?= $filter_user ? '&filter_user=' . urlencode($filter_user) : '' ?><?= $date_from ? '&date_from=' . urlencode($date_from) : '' ?><?= $date_to ? '&date_to=' . urlencode($date_to) : '' ?><?= $search ? '&search=' . urlencode($search) : '' ?>">
-                                            <i class="fas fa-chevron-left"></i>
-                                        </a>
+                    <nav aria-label="History pagination">
+                        <ul class="pagination justify-content-center">
+                            <?php if ($page > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page - 1 ?><?= buildUrlParams() ?>">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+
+                            <?php
+                            $start_page = max(1, $page - 2);
+                            $end_page = min($total_pages, $page + 2);
+                            
+                            if ($start_page > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1<?= buildUrlParams() ?>">1</a>
+                                </li>
+                                <?php if ($start_page > 2): ?>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
                                     </li>
                                 <?php endif; ?>
+                            <?php endif; ?>
 
-                                <?php
-                                $start_page = max(1, $page - 2);
-                                $end_page = min($total_pages, $page + 2);
-                                
-                                if ($start_page > 1): ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=1<?= $filter_user ? '&filter_user=' . urlencode($filter_user) : '' ?><?= $date_from ? '&date_from=' . urlencode($date_from) : '' ?><?= $date_to ? '&date_to=' . urlencode($date_to) : '' ?><?= $search ? '&search=' . urlencode($search) : '' ?>">1</a>
-                                    </li>
-                                    <?php if ($start_page > 2): ?>
-                                        <li class="page-item disabled">
-                                            <span class="page-link">...</span>
-                                        </li>
-                                    <?php endif; ?>
-                                <?php endif; ?>
+                            <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $i ?><?= buildUrlParams() ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
 
-                                <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
-                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $i ?><?= $filter_user ? '&filter_user=' . urlencode($filter_user) : '' ?><?= $date_from ? '&date_from=' . urlencode($date_from) : '' ?><?= $date_to ? '&date_to=' . urlencode($date_to) : '' ?><?= $search ? '&search=' . urlencode($search) : '' ?>"><?= $i ?></a>
-                                    </li>
-                                <?php endfor; ?>
-
-                                <?php if ($end_page < $total_pages): ?>
-                                    <?php if ($end_page < $total_pages - 1): ?>
-                                        <li class="page-item disabled">
-                                            <span class="page-link">...</span>
-                                        </li>
-                                    <?php endif; ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<?= $total_pages ?><?= $filter_user ? '&filter_user=' . urlencode($filter_user) : '' ?><?= $date_from ? '&date_from=' . urlencode($date_from) : '' ?><?= $date_to ? '&date_to=' . urlencode($date_to) : '' ?><?= $search ? '&search=' . urlencode($search) : '' ?>"><?= $total_pages ?></a>
+                            <?php if ($end_page < $total_pages): ?>
+                                <?php if ($end_page < $total_pages - 1): ?>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
                                     </li>
                                 <?php endif; ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $total_pages ?><?= buildUrlParams() ?>"><?= $total_pages ?></a>
+                                </li>
+                            <?php endif; ?>
 
-                                <?php if ($page < $total_pages): ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<?= $page + 1 ?><?= $filter_user ? '&filter_user=' . urlencode($filter_user) : '' ?><?= $date_from ? '&date_from=' . urlencode($date_from) : '' ?><?= $date_to ? '&date_to=' . urlencode($date_to) : '' ?><?= $search ? '&search=' . urlencode($search) : '' ?>">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
-                        </nav>
-                                </div>
+                            <?php if ($page < $total_pages): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page + 1 ?><?= buildUrlParams() ?>">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
+                </div>
             <?php endif; ?>
             
         </main>
     </div>
 
-    
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Function to update items per page
+        function updatePerPage(perPage) {
+            const url = new URL(window.location);
+            url.searchParams.set('per_page', perPage);
+            url.searchParams.delete('page'); // Reset to page 1 when changing per_page
+            window.location.href = url.toString();
+        }
+        
         // Auto-refresh untuk data real-time (optional)
         function refreshData() {
             if (document.visibilityState === 'visible') {
